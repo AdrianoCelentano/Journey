@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class AndroidModelDownloader(private val context: Context) : ModelDownloader {
+class AndroidModelDownloader(context: Context) : ModelDownloader {
 
     private val assetPackManager: AssetPackManager = AssetPackManagerFactory.getInstance(context)
     private val _downloadState = MutableStateFlow<DownloadState>(DownloadState.Idle)
