@@ -31,6 +31,8 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.play.asset.delivery)
+            implementation(libs.play.asset.delivery.ktx)
             implementation(libs.mediapipe.tasks.genai)
         }
         commonMain.dependencies {
@@ -81,6 +83,7 @@ android {
         abortOnError = true
         checkReleaseBuilds = false
     }
+    assetPacks += mutableSetOf(":gemma_model")
 }
 
 dependencies {
