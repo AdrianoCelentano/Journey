@@ -24,7 +24,7 @@ graph TD
     A[Koin DI Module] -->|Injects| B(LargeLanguageModel)
     B -->|Provides Interface| C{Common Domain}
     
-    C -->|Implemented By| D[Android: LargeLanguageModelImpl]
+    C -->|Implemented By| D[Android: LargeLanguageModelMediaPipe]
     C -->|Stubbed For| E[iOS: PlatformModule]
     
     D -->|Initializes| F[MediaPipe LlmInference]
@@ -35,14 +35,14 @@ graph TD
 ### Key Components Added
 
 1. **`LargeLanguageModel` Interface**: A platform-agnostic interface located in `commonMain` that defines a `suspend fun generateResponse(prompt: String): String`.
-2. **`LargeLanguageModelImpl`**: The Android-specific implementation. 
+2. **`LargeLanguageModelMediaPipe`**: The Android-specific implementation. 
     - It takes an Android `Context` and model name.
     - Inside its `init` block (running on an IO coroutine to prevent ANRs), it checks the app's internal file storage for the model file (e.g., `gemma-2b-it-cpu-int8.bin`). 
     - If the file does not exist, it securely copies it from the Android `assets` directory to the app's internal files directory because MediaPipe requires an absolute `.absolutePath` to load the `.bin` model via native C++ bindings.
     - It initializes the `LlmInference` client.
 3. **Koin Integration**:
     - An `expect val platformModule: Module` was added in `KoinModule.kt`.
-    - In `androidMain`, `platformModule` provides a singleton instance of `LargeLanguageModelImpl` initialized at startup (`createdAtStart = true`).
+    - In `androidMain`, `platformModule` provides a singleton instance of `LargeLanguageModelMediaPipe` initialized at startup (`createdAtStart = true`).
     - In `iosMain`, a stub implementation is provided, allowing the shared codebase to compile while the iOS variant awaits a concrete local model solution.
 
 ### How to Add the Model
