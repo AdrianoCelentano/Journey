@@ -13,7 +13,7 @@ When applying this workflow, follow these exact steps:
 6. **Create Pull Request**: Use the `github-mcp-server` to:
     - Commit your changes with a descriptive commit message.
     - Open a Pull Request on the repository explaining what was done, referencing the original issue.
-7. **Update Documentation (Wiki)**: Update the project's official GitHub Wiki by cloning its separate repository locally (e.g., `git clone https://github.com/AdrianoCelentano/Journey.wiki.git` into a temporary folder), modifying or creating the necessary Markdown files, and pushing the changes back. Do NOT create documentation markdown files inside the main project repository.
+7. **Update Documentation**: Create or update Markdown files inside the `/docs` folder of the main repository. Do NOT clone the wiki repository or push to it directly; synchronization to the wiki is handled automatically by a GitHub Action.
 Rely on **Mermaid diagrams** for visualization of the logic. 
 Ensure that you write:
     - A *domain-specific section* that explains the feature in plain English for non-technical stakeholders.
