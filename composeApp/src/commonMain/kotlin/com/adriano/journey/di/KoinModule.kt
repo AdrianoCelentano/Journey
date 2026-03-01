@@ -7,7 +7,7 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
 
-expect fun platformModule(): Module
+expect val platformModule: Module
 
 val appModule = module {
     viewModelOf(::JourneyEntryViewModel)
@@ -16,6 +16,6 @@ val appModule = module {
 fun initKoin(appDeclaration: KoinAppDeclaration = {}) {
     startKoin {
         appDeclaration()
-        modules(appModule, platformModule())
+        modules(appModule, platformModule)
     }
 }

@@ -33,6 +33,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.play.asset.delivery)
             implementation(libs.play.asset.delivery.ktx)
+            implementation(libs.mediapipe.tasks.genai)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
