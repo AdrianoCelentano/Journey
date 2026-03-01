@@ -1,6 +1,6 @@
 package com.adriano.journey.domain
 
-import android.content.Context
+import android.app.Application
 import android.util.Log
 import com.google.mediapipe.tasks.genai.llminference.LlmInference
 import kotlinx.coroutines.CoroutineDispatcher
@@ -12,12 +12,11 @@ import java.io.File
 import java.io.FileOutputStream
 
 class LargeLanguageModelMediaPipe(
-    context: Context,
-    private val modelName: String = "gemma-2b-it-cpu-int8.bin",
+    private val context: Application,
+    private val modelName: String = "gemma-2b-it-gpu-int4.bin",
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : LargeLanguageModel {
 
-    private val appContext = context.applicationContext
     private var llmInference: LlmInference? = null
     private val scope = CoroutineScope(ioDispatcher)
 
@@ -30,7 +29,7 @@ class LargeLanguageModelMediaPipe(
 
     private fun initializeLlm() {
         try {
-            val modelFile = File(appContext.filesDir, modelName)
+            val modelFile = File(context.getExternalFilesDir(null), modelName)
             if (!modelFile.exists()) {
                 Log.d("LargeLanguageModel", "Copying model from assets to internal storage...")
                 copyModelFromAssets(modelFile)
@@ -41,8 +40,9 @@ class LargeLanguageModelMediaPipe(
                 Log.d("LargeLanguageModel", "Initializing LlmInference...")
                 val options = LlmInference.LlmInferenceOptions.builder()
                     .setModelPath(modelFile.absolutePath)
+                    .setMaxTokens(512)
                     .build()
-                llmInference = LlmInference.createFromOptions(appContext, options)
+                llmInference = LlmInference.createFromOptions(context, options)
                 Log.d("LargeLanguageModel", "LlmInference initialized successfully.")
             }
         } catch (e: Exception) {
@@ -51,7 +51,7 @@ class LargeLanguageModelMediaPipe(
     }
 
     private fun copyModelFromAssets(destination: File) {
-        appContext.assets.open(modelName).use { inputStream ->
+        context.assets.open(modelName).use { inputStream ->
             FileOutputStream(destination).use { outputStream ->
                 inputStream.copyTo(outputStream)
             }
