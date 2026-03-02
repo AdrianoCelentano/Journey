@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import com.adriano.journey.domain.DownloadState
+import com.adriano.journey.domain.LargeLanguageModel
 import com.adriano.journey.domain.LargeLanguageModelMediaPipe
 import com.adriano.journey.domain.ModelDownloader
 import kotlinx.coroutines.launch
@@ -18,23 +19,16 @@ import org.koin.core.component.inject
 class MainActivity : ComponentActivity(), KoinComponent {
 
     private val modelDownloader: ModelDownloader by inject()
-    private val LLM: LargeLanguageModelMediaPipe by inject()
+    private val LLM: LargeLanguageModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
-        // Start model download on app startup
-        modelDownloader.downloadModel()
-        if (modelDownloader.downloadState.value is DownloadState.Downloaded) {
-            lifecycleScope.launch {
-                val test = LLM.generateResponse("hallo")
-                println(test)
-            }
-        } else {
-            println("nono")
+        lifecycleScope.launch {
+            val test = LLM.generateResponse("hallo")
+            Log.d("qwer", test)
         }
-
 
         setContent {
             App()

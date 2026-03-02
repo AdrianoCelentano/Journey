@@ -1,6 +1,7 @@
 package com.adriano.journey.domain
 
 import android.app.Application
+import android.content.pm.ApplicationInfo
 import android.util.Log
 import com.google.mediapipe.tasks.genai.llminference.LlmInference
 import kotlinx.coroutines.CoroutineDispatcher
@@ -19,11 +20,21 @@ class LargeLanguageModelMediaPipe(
     private val scope = CoroutineScope(ioDispatcher)
 
     init {
-        // Initialize on app startup asynchronously to avoid blocking the main thread
-        scope.launch {
-            modelDownloader.downloadState.collect { state ->
-                if (state is DownloadState.Downloaded && llmInference == null) {
-                    initializeLlm(state.path)
+        val isDebuggable = (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
+        if (isDebuggable) {
+            // Push the model to your phone's local storage:
+            // adb shell mkdir -p /data/local/tmp/llm/
+            // adb push /Users/adrian/AndroidStudioProjects/Journey/gemma_model/src/main/assets/gemma-2b-it-gpu-int4.bin /data/local/tmp/llm/
+            scope.launch {
+                initializeLlm("/data/local/tmp/llm/gemma-2b-it-gpu-int4.bin")
+            }
+        } else {
+            // Initialize on app startup asynchronously to avoid blocking the main thread
+            scope.launch {
+                modelDownloader.downloadState.collect { state ->
+                    if (state is DownloadState.Downloaded && llmInference == null) {
+                        initializeLlm(state.path)
+                    }
                 }
             }
         }
@@ -34,7 +45,7 @@ class LargeLanguageModelMediaPipe(
             Log.d("LargeLanguageModel", "Initializing LlmInference with path: $modelPath")
             val options = LlmInference.LlmInferenceOptions.builder()
                 .setModelPath(modelPath)
-                .setMaxTokens(512)
+                .setMaxTokens(1024)
                 .build()
             llmInference = LlmInference.createFromOptions(context, options)
             Log.d("LargeLanguageModel", "LlmInference initialized successfully.")
