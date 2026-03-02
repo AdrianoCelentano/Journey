@@ -41,7 +41,7 @@ koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 play-asset-delivery = { module = "com.google.android.play:asset-delivery", version.ref = "playAssetDelivery" }
 play-asset-delivery-ktx = { module = "com.google.android.play:asset-delivery-ktx", version.ref = "playAssetDelivery" }
-mediapipe-tasks-genai = { module = "com.google.mediapipe:tasks-genai", version = "0.10.14" }
+mediapipe-tasks-genai = { module = "com.google.mediapipe:tasks-genai", version = "0.10.32" }
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
