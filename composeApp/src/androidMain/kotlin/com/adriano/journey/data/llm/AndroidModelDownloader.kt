@@ -77,11 +77,13 @@ class AndroidModelDownloader(context: Context) : ModelDownloader {
         }
 
     private val AssetPackState.progress: Float
-        get() = if (totalBytesToDownload() == 0L) 0f
-        else bytesDownloaded().toFloat() / totalBytesToDownload().toFloat()
+        get() = if (totalBytesToDownload() == 0L) {
+            0f
+        } else {
+            bytesDownloaded().toFloat() / totalBytesToDownload().toFloat()
+        }
 
     companion object {
         private const val packName = "gemma_model"
     }
-
 }

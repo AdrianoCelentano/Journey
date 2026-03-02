@@ -13,9 +13,7 @@ class JourneyEntryService(
     private val scope = CoroutineScope(ioDispatcher)
 
     fun addEntry(note: String) = scope.launch {
-
         val correctedNote = llm.generateResponse(prompt(note))
-
     }
 
     private fun prompt(note: String): String =

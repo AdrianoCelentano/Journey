@@ -64,4 +64,9 @@ class LargeLanguageModelMediaPipe(
             "Error: LLM not initialized yet. Please wait."
         }
     }
+
+    override suspend fun generateVector(prompt: String): List<Float> = withContext(ioDispatcher) {
+        val words = prompt.split(" ")
+        words.map { it.hashCode().toFloat() }
+    }
 }
