@@ -13,7 +13,7 @@ When applying this workflow, follow these exact steps:
 6. **Create Pull Request**: Use the `github-mcp-server` to:
     - Commit your changes with a descriptive commit message.
     - Open a Pull Request on the repository explaining what was done, referencing the original issue.
-7. **Update Documentation**: Create or update Markdown files inside the `/docs` folder of the main repository. synchronization to the wiki is handled automatically by a GitHub Action.
+7. **Update Documentation**: Create new Markdown files inside the `/docs` folder of the main repository for the new feature or enhancement. **IMPORTANT**: All newly generated documentation files MUST have the prefix `new_doc_` in their filename (e.g., `new_doc_user_login.md`).
 Rely on **Mermaid diagrams** for visualization of the logic. 
 Ensure that you write:
     - A *domain-specific section* that explains the feature in plain English for non-technical stakeholders.
