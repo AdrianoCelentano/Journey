@@ -4,7 +4,7 @@ plugins {
 
 assetPack {
     packName.set("gemma_model")
-    dynamicDelivery { // or simply deliveryType.set("fast-follow") if using pure AGP format, let's use the standard
+    dynamicDelivery {
         deliveryType.set("fast-follow")
     }
 }
