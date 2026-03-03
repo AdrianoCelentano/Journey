@@ -4,7 +4,10 @@ import android.app.Application
 import android.util.Log
 import com.adriano.journey.domain.LargeLanguageModel
 import com.adriano.journey.domain.ModelDownloader
+import com.google.mediapipe.tasks.core.BaseOptions
 import com.google.mediapipe.tasks.genai.llminference.LlmInference
+import com.google.mediapipe.tasks.text.textembedder.TextEmbedder
+import com.google.mediapipe.tasks.text.textembedder.TextEmbedder.TextEmbedderOptions
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +23,7 @@ class LargeLanguageModelMediaPipe(
 ) : LargeLanguageModel {
 
     private var llmInference: LlmInference? = null
+    private var textEmbedder: TextEmbedder? = null
     private val scope = CoroutineScope(ioDispatcher)
 
     init {
@@ -37,6 +41,17 @@ class LargeLanguageModelMediaPipe(
                 .setPreferredBackend(LlmInference.Backend.GPU)
                 .build()
             llmInference = LlmInference.createFromOptions(context, taskOptions)
+
+            val baseOptions = BaseOptions.builder()
+                .setModelAssetPath("/data/local/tmp/llm/embeddinggemma-300M_seq512_mixed-precision.tflite")
+                .build()
+
+            val options = TextEmbedderOptions.builder()
+                .setBaseOptions(baseOptions)
+                .setQuantize(false)
+                .build()
+
+            textEmbedder = TextEmbedder.createFromOptions(context, options)
         } catch (e: Exception) {
             Log.e("LargeLanguageModel", "Failed to initialize LLM", e)
         }
@@ -60,9 +75,21 @@ class LargeLanguageModelMediaPipe(
     }
 
     override suspend fun generateVector(prompt: String): List<Float> = withContext(ioDispatcher) {
-        // MediaPipe LlmInference does not expose embeddings natively.
-        // Returning a mock vector based on string hash as a structural placeholder.
-        val words = prompt.split(" ")
-        words.map { it.hashCode().toFloat() }
+        while (textEmbedder == null) {
+            delay(200.milliseconds)
+        }
+        val embedder = textEmbedder
+        if (embedder != null) {
+            try {
+                val result = embedder.embed(prompt)
+                result.embeddingResult().embeddings().get(0).floatEmbedding().toList()
+            } catch (e: Exception) {
+                Log.e("LargeLanguageModel", "Error generating vector", e)
+                emptyList()
+            }
+        } else {
+            Log.e("LargeLanguageModel", "TextEmbedder not initialized")
+            emptyList()
+        }
     }
 }

@@ -43,6 +43,7 @@ koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", ver
 play-asset-delivery = { module = "com.google.android.play:asset-delivery", version.ref = "playAssetDelivery" }
 play-asset-delivery-ktx = { module = "com.google.android.play:asset-delivery-ktx", version.ref = "playAssetDelivery" }
 mediapipe-tasks-genai = { module = "com.google.mediapipe:tasks-genai", version = "0.10.32" }
+mediapipe-tasks-text = { module = "com.google.mediapipe:tasks-text", version = "0.10.0" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }

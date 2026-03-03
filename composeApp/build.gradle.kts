@@ -35,6 +35,7 @@ kotlin {
             implementation(libs.play.asset.delivery)
             implementation(libs.play.asset.delivery.ktx)
             implementation(libs.mediapipe.tasks.genai)
+            implementation(libs.mediapipe.tasks.text)
             implementation(libs.room.runtime)
             implementation(libs.room.ktx)
         }

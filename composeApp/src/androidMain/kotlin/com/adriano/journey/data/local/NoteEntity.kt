@@ -8,6 +8,6 @@ data class NoteEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val content: String,
-    val vectorJson: String,
+    val contentVector: FloatArray,
     val timestamp: Long,
 )
