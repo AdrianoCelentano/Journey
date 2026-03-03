@@ -15,11 +15,11 @@ import kotlinx.coroutines.withContext
 
 class TextEmbedderMediaPipe(
     private val context: Application,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) : JourneyTextEmbedder {
 
     private var textEmbedderDeferred = CompletableDeferred<TextEmbedder>()
-    private val scope = CoroutineScope(ioDispatcher)
+    private val scope = CoroutineScope(defaultDispatcher)
 
     init {
         scope.launch {
@@ -40,7 +40,7 @@ class TextEmbedderMediaPipe(
         }
     }
 
-    override suspend fun generateVector(prompt: String): List<Float> = withContext(ioDispatcher) {
+    override suspend fun generateVector(prompt: String): List<Float> = withContext(defaultDispatcher) {
         val textEmbedder = textEmbedderDeferred.await()
         try {
             val result = textEmbedder.embed(prompt)

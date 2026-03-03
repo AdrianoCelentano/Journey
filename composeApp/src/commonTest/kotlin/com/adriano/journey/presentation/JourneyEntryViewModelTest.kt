@@ -32,7 +32,6 @@ class FakeLargeLanguageModel : LargeLanguageModel {
     override suspend fun generateResponse(prompt: String): String = "corrected note"
 }
 
-
 class FakeTextEmbedder : JourneyTextEmbedder {
     override suspend fun generateVector(prompt: String): List<Float> = listOf(1f, 2f, 3f)
 }

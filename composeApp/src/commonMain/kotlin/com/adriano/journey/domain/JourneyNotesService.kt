@@ -4,6 +4,7 @@ import com.adriano.journey.data.JourneyTextEmbedder
 import com.adriano.journey.data.LlmProvider
 import com.adriano.journey.data.NoteRepository
 import com.adriano.journey.utils.getCurrentTimeMillis
+import kotlinx.coroutines.withContext
 import kotlin.math.sqrt
 
 class JourneyNotesService(
@@ -38,6 +39,7 @@ class JourneyNotesService(
 
     suspend fun searchEntries(search: String): String {
         val notes = noteRepository.loadNotes()
+
         val queryVector = textEmbedder.generateVector(search)
         val matchingNotes = findMatchingNotes(notes, queryVector).map { it.content }
         val prompt = searchNotePrompt(matchingNotes, search)
