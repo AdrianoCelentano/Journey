@@ -1,5 +1,6 @@
 package com.adriano.journey.di
 
+import com.adriano.journey.data.LlmProvider
 import com.adriano.journey.domain.JourneyNotesService
 import com.adriano.journey.presentation.JourneyEntryViewModel
 import org.koin.core.context.startKoin
@@ -11,7 +12,8 @@ import org.koin.dsl.module
 expect val platformModule: Module
 
 val appModule = module {
-    single { JourneyNotesService(get(), get(), get()) }
+    single { com.adriano.journey.data.LlmProvider() }
+    single { JourneyNotesService(get<LlmProvider>().provide(), get(), get()) }
     viewModelOf(::JourneyEntryViewModel)
 }
 

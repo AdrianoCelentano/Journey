@@ -7,12 +7,12 @@ import com.adriano.journey.utils.getCurrentTimeMillis
 import kotlin.math.sqrt
 
 class JourneyNotesService(
-    private val llm: LargeLanguageModel,
+    private val Llm: LargeLanguageModel,
     private val textEmbedder: JourneyTextEmbedder,
     private val noteRepository: NoteRepository,
 ) {
     suspend fun addEntry(note: String) {
-        val correctedNote = llm.generateResponse(saveNotePrompt(note))
+        val correctedNote = Llm.generateResponse(saveNotePrompt(note))
         val vector = textEmbedder.generateVector(correctedNote)
         val timestamp = getCurrentTimeMillis()
         noteRepository.saveNote(correctedNote, vector, timestamp)
@@ -38,7 +38,7 @@ class JourneyNotesService(
         val queryVector = textEmbedder.generateVector(search)
         val matchingNotes = findMatchingNotes(notes, queryVector).map { it.content }
         val prompt = searchNotePrompt(matchingNotes, search)
-        return llm.generateResponse(prompt)
+        return Llm.generateResponse(prompt)
     }
 
     private fun searchNotePrompt(notes: List<String>, search: String): String =

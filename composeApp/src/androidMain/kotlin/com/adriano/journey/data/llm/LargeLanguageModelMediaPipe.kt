@@ -4,6 +4,8 @@ import android.app.Application
 import android.util.Log
 import com.adriano.journey.data.LargeLanguageModel
 import com.google.mediapipe.tasks.genai.llminference.LlmInference
+import com.google.mediapipe.tasks.text.textembedder.TextEmbedder
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +19,7 @@ class LargeLanguageModelMediaPipe(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : LargeLanguageModel {
 
-    private var llmInference: LlmInference? = null
+    private val llmInferenceDeferred = CompletableDeferred<LlmInference>()
     private val scope = CoroutineScope(ioDispatcher)
 
     init {
@@ -32,26 +34,19 @@ class LargeLanguageModelMediaPipe(
                 .setModelPath("/data/local/tmp/llm/gemma3-1b-it-int4.task")
                 .setPreferredBackend(LlmInference.Backend.GPU)
                 .build()
-            llmInference = LlmInference.createFromOptions(context, taskOptions)
+            llmInferenceDeferred.complete(LlmInference.createFromOptions(context, taskOptions))
         } catch (e: Exception) {
             Log.e("LargeLanguageModel", "Failed to initialize LLM", e)
         }
     }
 
     override suspend fun generateResponse(prompt: String): String = withContext(ioDispatcher) {
-        while (llmInference == null) {
-            delay(200.milliseconds)
-        }
-        val inference = llmInference
-        if (inference != null) {
-            try {
-                inference.generateResponse(prompt)
-            } catch (e: Exception) {
-                Log.e("LargeLanguageModel", "Error generating response", e)
-                "Error generating response: ${e.message}"
-            }
-        } else {
-            "Error: LLM not initialized yet. Please wait."
+        val inference = llmInferenceDeferred.await()
+        try {
+            inference.generateResponse(prompt)
+        } catch (e: Exception) {
+            Log.e("LargeLanguageModel", "Error generating response", e)
+            "Error generating response: ${e.message}"
         }
     }
 }
