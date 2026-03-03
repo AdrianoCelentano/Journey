@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,12 +30,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.adriano.journey.presentation.JourneyEntryIntent
+import com.adriano.journey.presentation.JourneyEntryViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(modifier: Modifier = Modifier) {
+fun SearchScreen(
+    modifier: Modifier = Modifier,
+    viewModel: JourneyEntryViewModel = koinViewModel(),
+) {
     var showDatePicker by remember { mutableStateOf(false) }
     val dateRangePickerState = rememberDateRangePickerState()
+    val state = viewModel.state.collectAsState().value
 
     if (showDatePicker) {
         DatePickerDialog(
@@ -42,9 +50,12 @@ fun SearchScreen(modifier: Modifier = Modifier) {
             confirmButton = {
                 TextButton(onClick = {
                     showDatePicker = false
-                    // TODO: Pass the selected date range out
-                    // dateRangePickerState.selectedStartDateMillis
-                    // dateRangePickerState.selectedEndDateMillis
+                    viewModel.onIntent(
+                        JourneyEntryIntent.UpdateDateRange(
+                            startDate = dateRangePickerState.selectedStartDateMillis,
+                            endDate = dateRangePickerState.selectedEndDateMillis,
+                        ),
+                    )
                 }) {
                     Text("OK")
                 }
@@ -71,7 +82,17 @@ fun SearchScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Column(modifier = Modifier.weight(1f).fillMaxWidth()) {
-            Text("AI: Hello! What would you like to find?", style = MaterialTheme.typography.bodyLarge)
+            if (state.answer.isBlank()) {
+                Text(
+                    "AI: Hello! What would you like to find?",
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            } else {
+                Text(
+                    state.answer,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -85,13 +106,13 @@ fun SearchScreen(modifier: Modifier = Modifier) {
             }
             Spacer(modifier = Modifier.width(8.dp))
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = state.search,
+                onValueChange = { viewModel.onIntent(JourneyEntryIntent.UpdateNoteSearchText(it)) },
                 modifier = Modifier.weight(1f),
                 placeholder = { Text("Ask the AI...") },
             )
             Spacer(modifier = Modifier.width(8.dp))
-            IconButton(onClick = { /* Send */ }) {
+            IconButton(onClick = { viewModel.onIntent(JourneyEntryIntent.SearchNotes) }) {
                 Icon(Icons.Default.Send, contentDescription = "Send")
             }
         }

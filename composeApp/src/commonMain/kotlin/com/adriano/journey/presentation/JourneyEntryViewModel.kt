@@ -32,12 +32,14 @@ class JourneyEntryViewModel(
                 savedStateHandle[TEXT_KEY] = intent.text
                 _state.update { it.copy(note = intent.text) }
             }
-
             is JourneyEntryIntent.SaveNote -> saveNote()
             is JourneyEntryIntent.SearchNotes -> searchNotes()
             is JourneyEntryIntent.UpdateNoteSearchText -> {
                 savedStateHandle[TEXT_KEY] = intent.text
                 _state.update { it.copy(search = intent.text) }
+            }
+            is JourneyEntryIntent.UpdateDateRange -> {
+                _state.update { it.copy(startDate = intent.startDate, endDate = intent.endDate) }
             }
         }
     }
