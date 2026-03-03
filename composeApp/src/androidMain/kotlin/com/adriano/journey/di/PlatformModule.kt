@@ -1,6 +1,7 @@
 package com.adriano.journey.di
 
 import com.adriano.journey.data.llm.AndroidModelDownloader
+import com.adriano.journey.data.llm.LargeLanguageModelGeminiNano
 import com.adriano.journey.data.llm.LargeLanguageModelMediaPipe
 import com.adriano.journey.data.local.AppDatabase
 import com.adriano.journey.data.local.NoteDao
@@ -16,7 +17,8 @@ import org.koin.dsl.module
 actual val platformModule: Module = module {
     single<ModelDownloader> { AndroidModelDownloader(androidContext()) }
     single<LargeLanguageModel>(createdAtStart = true) {
-        LargeLanguageModelMediaPipe(androidApplication(), get())
+        val fallback = LargeLanguageModelMediaPipe(androidApplication(), get())
+        LargeLanguageModelGeminiNano(androidApplication(), fallback)
     }
     single<AppDatabase> {
         androidx.room.Room.databaseBuilder(

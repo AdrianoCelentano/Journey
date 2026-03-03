@@ -38,6 +38,7 @@ kotlin {
             implementation(libs.mediapipe.tasks.text)
             implementation(libs.room.runtime)
             implementation(libs.room.ktx)
+            implementation(libs.mlkit.genai.prompt)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -56,6 +57,11 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
+        }
+        val androidUnitTest by getting {
+            dependencies {
+                implementation(libs.mockk)
+            }
         }
     }
 }
