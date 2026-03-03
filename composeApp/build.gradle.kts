@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.spotless)
     alias(libs.plugins.detekt)
+    kotlin("kapt")
 }
 
 kotlin {
@@ -34,6 +35,8 @@ kotlin {
             implementation(libs.play.asset.delivery)
             implementation(libs.play.asset.delivery.ktx)
             implementation(libs.mediapipe.tasks.genai)
+            implementation(libs.room.runtime)
+            implementation(libs.room.ktx)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -47,9 +50,11 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
+            implementation(libs.gson)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
         }
     }
 }
@@ -88,5 +93,6 @@ android {
 
 dependencies {
     debugImplementation(libs.compose.uiTooling)
+    add("kapt", libs.room.compiler)
 }
 

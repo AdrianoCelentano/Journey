@@ -23,10 +23,10 @@ class LargeLanguageModelMediaPipe(
     private val scope = CoroutineScope(ioDispatcher)
 
     init {
-            scope.launch {
-                initializeLlm()
-            }
+        scope.launch {
+            initializeLlm()
         }
+    }
 
     private fun initializeLlm() {
         try {
@@ -57,5 +57,12 @@ class LargeLanguageModelMediaPipe(
         } else {
             "Error: LLM not initialized yet. Please wait."
         }
+    }
+
+    override suspend fun generateVector(prompt: String): List<Float> = withContext(ioDispatcher) {
+        // MediaPipe LlmInference does not expose embeddings natively.
+        // Returning a mock vector based on string hash as a structural placeholder.
+        val words = prompt.split(" ")
+        words.map { it.hashCode().toFloat() }
     }
 }

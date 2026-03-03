@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -58,5 +59,13 @@ fun JourneyEntryScreen(
             minLines = 5,
             placeholder = { Text("What's on your mind?") },
         )
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(
+            onClick = { viewModel.onIntent(JourneyEntryIntent.SaveNote) },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = state.text.isNotBlank(),
+        ) {
+            Text("Save Note")
+        }
     }
 }
