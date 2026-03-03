@@ -1,19 +1,19 @@
 package com.adriano.journey.domain
 
+import com.adriano.journey.utils.getCurrentTimeMillis
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class JourneyEntryService(
     private val llm: LargeLanguageModel,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val noteRepository: NoteRepository,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.Default,
 ) {
-
-    private val scope = CoroutineScope(ioDispatcher)
-
-    fun addEntry(note: String) = scope.launch {
+    suspend fun addEntry(note: String) {
         val correctedNote = llm.generateResponse(prompt(note))
+        val vector = llm.generateVector(correctedNote)
+        val timestamp = getCurrentTimeMillis()
+        noteRepository.saveNote(correctedNote, vector, timestamp)
     }
 
     private fun prompt(note: String): String =

@@ -10,6 +10,7 @@ import org.koin.dsl.module
 expect val platformModule: Module
 
 val appModule = module {
+    single { com.adriano.journey.domain.JourneyEntryService(get(), get()) }
     viewModelOf(::JourneyEntryViewModel)
 }
 

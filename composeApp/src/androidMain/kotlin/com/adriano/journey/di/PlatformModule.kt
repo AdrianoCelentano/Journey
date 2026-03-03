@@ -5,7 +5,6 @@ import com.adriano.journey.data.llm.LargeLanguageModelMediaPipe
 import com.adriano.journey.data.local.AppDatabase
 import com.adriano.journey.data.local.NoteDao
 import com.adriano.journey.data.local.NoteRepositoryImpl
-import com.adriano.journey.domain.JourneyEntryService
 import com.adriano.journey.domain.LargeLanguageModel
 import com.adriano.journey.domain.ModelDownloader
 import com.adriano.journey.domain.NoteRepository
@@ -16,7 +15,6 @@ import org.koin.dsl.module
 
 actual val platformModule: Module = module {
     single<ModelDownloader> { AndroidModelDownloader(androidContext()) }
-    single<JourneyEntryService> { JourneyEntryService(get()) }
     single<LargeLanguageModel>(createdAtStart = true) {
         LargeLanguageModelMediaPipe(androidApplication(), get())
     }

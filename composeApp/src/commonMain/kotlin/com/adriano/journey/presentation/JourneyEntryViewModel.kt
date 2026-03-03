@@ -3,9 +3,7 @@ package com.adriano.journey.presentation
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.adriano.journey.domain.LargeLanguageModel
-import com.adriano.journey.domain.NoteRepository
-import com.adriano.journey.utils.getCurrentTimeMillis
+import com.adriano.journey.domain.JourneyEntryService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,8 +12,7 @@ import kotlinx.coroutines.launch
 
 class JourneyEntryViewModel(
     private val savedStateHandle: SavedStateHandle,
-    private val noteRepository: NoteRepository,
-    private val largeLanguageModel: LargeLanguageModel,
+    private val journeyEntryService: JourneyEntryService,
 ) : ViewModel() {
 
     companion object {
@@ -44,9 +41,7 @@ class JourneyEntryViewModel(
         if (currentText.isBlank()) return
 
         viewModelScope.launch {
-            val vector = largeLanguageModel.generateVector(currentText)
-            val timestamp = getCurrentTimeMillis()
-            noteRepository.saveNote(currentText, vector, timestamp)
+            journeyEntryService.addEntry(currentText)
             onIntent(JourneyEntryIntent.UpdateText(""))
         }
     }
