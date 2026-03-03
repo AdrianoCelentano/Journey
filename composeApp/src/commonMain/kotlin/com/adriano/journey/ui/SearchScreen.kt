@@ -1,5 +1,7 @@
 package com.adriano.journey.ui
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,8 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.DateRange
@@ -85,7 +88,7 @@ fun SearchScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Column(
-            modifier = Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
+            modifier = Modifier.weight(1f).fillMaxWidth(),
         ) {
             if (state.questions.isEmpty()) {
                 Text(
@@ -93,21 +96,50 @@ fun SearchScreen(
                     style = MaterialTheme.typography.bodyLarge,
                 )
             } else {
-                state.questions.forEach {
-                    Text(
-                        it.question,
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                    Spacer(Modifier.height(4.dp))
-                    Text(
-                        it.answer,
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                    Spacer(Modifier.height(8.dp))
+                LazyColumn(modifier = Modifier.fillMaxWidth().weight(1f)) {
+                    items(state.questions) { item ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp),
+                            contentAlignment = Alignment.CenterEnd,
+                        ) {
+                            Text(
+                                text = item.question,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier
+                                    .background(
+                                        color = MaterialTheme.colorScheme.primary,
+                                        shape = RoundedCornerShape(16.dp, 16.dp, 0.dp, 16.dp),
+                                    )
+                                    .padding(12.dp),
+                            )
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp),
+                            contentAlignment = Alignment.CenterStart,
+                        ) {
+                            Text(
+                                text = item.answer,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier
+                                    .background(
+                                        color = MaterialTheme.colorScheme.surfaceVariant,
+                                        shape = RoundedCornerShape(16.dp, 16.dp, 16.dp, 0.dp),
+                                    )
+                                    .padding(12.dp),
+                            )
+                        }
+                    }
                 }
             }
             if (state.searchLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 8.dp))
             }
         }
 
@@ -134,7 +166,7 @@ fun SearchScreen(
             Spacer(modifier = Modifier.width(8.dp))
             IconButton(
                 onClick = { viewModel.onIntent(JourneyEntryIntent.SearchNotes) },
-                enabled = !state.searchLoading,
+                enabled = !state.searchLoading && !state.searchInput.isEmpty(),
             ) {
                 Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Send")
             }

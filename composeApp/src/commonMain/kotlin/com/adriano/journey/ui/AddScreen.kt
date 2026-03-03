@@ -55,7 +55,7 @@ fun AddScreen(modifier: Modifier = Modifier, viewModel: JourneyEntryViewModel = 
             Button(
                 onClick = { viewModel.onIntent(JourneyEntryIntent.EnhanceNote) },
                 modifier = Modifier.weight(0.5f),
-                enabled = !state.addNoteLoading,
+                enabled = !state.addNoteLoading && !state.noteInput.isBlank(),
             ) {
                 Icon(imageVector = Icons.Default.Abc, contentDescription = null)
                 Spacer(Modifier.width(5.dp))
@@ -65,7 +65,7 @@ fun AddScreen(modifier: Modifier = Modifier, viewModel: JourneyEntryViewModel = 
             Button(
                 onClick = { viewModel.onIntent(JourneyEntryIntent.SaveNote) },
                 modifier = Modifier.weight(0.5f),
-                enabled = !state.addNoteLoading,
+                enabled = !state.addNoteLoading && !state.noteInput.isBlank(),
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = null)
                 Spacer(Modifier.width(5.dp))
