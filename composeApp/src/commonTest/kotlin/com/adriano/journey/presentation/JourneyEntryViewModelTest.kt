@@ -1,9 +1,9 @@
 package com.adriano.journey.presentation
 
 import androidx.lifecycle.SavedStateHandle
+import com.adriano.journey.data.JourneyTextEmbedder
 import com.adriano.journey.data.LargeLanguageModel
 import com.adriano.journey.data.NoteRepository
-import com.adriano.journey.data.JourneyTextEmbedder
 import com.adriano.journey.domain.JourneyNotesService
 import com.adriano.journey.domain.Note
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +33,7 @@ class FakeLargeLanguageModel : LargeLanguageModel {
 }
 
 class FakeTextEmbedder : JourneyTextEmbedder {
-    override suspend fun embedText(content: String): List<Float> = listOf(1f, 2f, 3f)
+    override suspend fun generateVector(prompt: String): List<Float> = listOf(1f, 2f, 3f)
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
