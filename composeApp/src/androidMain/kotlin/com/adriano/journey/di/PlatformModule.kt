@@ -1,23 +1,23 @@
 package com.adriano.journey.di
 
-import com.adriano.journey.data.llm.AndroidModelDownloader
+import com.adriano.journey.data.JourneyTextEmbedder
+import com.adriano.journey.data.LargeLanguageModel
+import com.adriano.journey.data.NoteRepository
+import com.adriano.journey.data.db.AppDatabase
+import com.adriano.journey.data.db.NoteDao
+import com.adriano.journey.data.db.NoteRepositoryImpl
 import com.adriano.journey.data.llm.LargeLanguageModelMediaPipe
-import com.adriano.journey.data.local.AppDatabase
-import com.adriano.journey.data.local.NoteDao
-import com.adriano.journey.data.local.NoteRepositoryImpl
-import com.adriano.journey.domain.LargeLanguageModel
-import com.adriano.journey.domain.ModelDownloader
-import com.adriano.journey.domain.NoteRepository
+import com.adriano.journey.data.llm.TextEmbedderMediaPipe
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 actual val platformModule: Module = module {
-    single<ModelDownloader> { AndroidModelDownloader(androidContext()) }
     single<LargeLanguageModel>(createdAtStart = true) {
-        LargeLanguageModelMediaPipe(androidApplication(), get())
+        LargeLanguageModelMediaPipe(androidApplication())
     }
+    single<JourneyTextEmbedder>(createdAtStart = true) { TextEmbedderMediaPipe(androidApplication()) }
     single<AppDatabase> {
         androidx.room.Room.databaseBuilder(
             androidContext(),

@@ -36,6 +36,8 @@ kotlin {
             implementation(libs.play.asset.delivery.ktx)
             implementation(libs.mediapipe.tasks.genai)
             implementation(libs.mediapipe.tasks.text)
+            implementation(project.dependencies.platform("com.google.firebase:firebase-bom:34.10.0"))
+            implementation(libs.firebase.ai)
             implementation(libs.room.runtime)
             implementation(libs.room.ktx)
         }
@@ -43,6 +45,7 @@ kotlin {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
+            implementation(compose.materialIconsExtended)
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
             implementation(libs.compose.uiToolingPreview)
@@ -55,7 +58,7 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
+            implementation(libs.kotlinx.coroutines.test)
         }
     }
 }

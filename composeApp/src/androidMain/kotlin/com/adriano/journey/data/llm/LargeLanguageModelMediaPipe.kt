@@ -2,12 +2,8 @@ package com.adriano.journey.data.llm
 
 import android.app.Application
 import android.util.Log
-import com.adriano.journey.domain.LargeLanguageModel
-import com.adriano.journey.domain.ModelDownloader
-import com.google.mediapipe.tasks.core.BaseOptions
+import com.adriano.journey.data.LargeLanguageModel
 import com.google.mediapipe.tasks.genai.llminference.LlmInference
-import com.google.mediapipe.tasks.text.textembedder.TextEmbedder
-import com.google.mediapipe.tasks.text.textembedder.TextEmbedder.TextEmbedderOptions
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,12 +14,10 @@ import kotlin.time.Duration.Companion.milliseconds
 
 class LargeLanguageModelMediaPipe(
     private val context: Application,
-    private val modelDownloader: ModelDownloader,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : LargeLanguageModel {
 
     private var llmInference: LlmInference? = null
-    private var textEmbedder: TextEmbedder? = null
     private val scope = CoroutineScope(ioDispatcher)
 
     init {
@@ -39,21 +33,6 @@ class LargeLanguageModelMediaPipe(
                 .setPreferredBackend(LlmInference.Backend.GPU)
                 .build()
             llmInference = LlmInference.createFromOptions(context, taskOptions)
-        } catch (e: Exception) {
-            Log.e("LargeLanguageModel", "Failed to initialize LLM", e)
-        }
-
-        try {
-            val baseOptions = BaseOptions.builder()
-                .setModelAssetPath("/data/local/tmp/llm/universal_sentence_encoder.tflite")
-                .build()
-
-            val options = TextEmbedderOptions.builder()
-                .setBaseOptions(baseOptions)
-                .setQuantize(false)
-                .build()
-
-            textEmbedder = TextEmbedder.createFromOptions(context, options)
         } catch (e: Exception) {
             Log.e("LargeLanguageModel", "Failed to initialize LLM", e)
         }
@@ -73,25 +52,6 @@ class LargeLanguageModelMediaPipe(
             }
         } else {
             "Error: LLM not initialized yet. Please wait."
-        }
-    }
-
-    override suspend fun generateVector(prompt: String): List<Float> = withContext(ioDispatcher) {
-        while (textEmbedder == null) {
-            delay(200.milliseconds)
-        }
-        val embedder = textEmbedder
-        if (embedder != null) {
-            try {
-                val result = embedder.embed(prompt)
-                result.embeddingResult().embeddings().get(0).floatEmbedding().toList()
-            } catch (e: Exception) {
-                Log.e("LargeLanguageModel", "Error generating vector", e)
-                emptyList()
-            }
-        } else {
-            Log.e("LargeLanguageModel", "TextEmbedder not initialized")
-            emptyList()
         }
     }
 }

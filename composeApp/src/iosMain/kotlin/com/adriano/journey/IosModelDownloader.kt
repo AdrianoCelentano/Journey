@@ -1,7 +1,7 @@
 package com.adriano.journey
 
-import com.adriano.journey.domain.DownloadState
-import com.adriano.journey.domain.ModelDownloader
+import com.adriano.journey.data.DownloadState
+import com.adriano.journey.data.ModelDownloader
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

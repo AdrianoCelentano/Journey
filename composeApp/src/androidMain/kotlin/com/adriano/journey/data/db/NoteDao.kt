@@ -1,4 +1,4 @@
-package com.adriano.journey.data.local
+package com.adriano.journey.data.db
 
 import androidx.room.Dao
 import androidx.room.Insert

@@ -1,4 +1,4 @@
-package com.adriano.journey.data.local
+package com.adriano.journey.data.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

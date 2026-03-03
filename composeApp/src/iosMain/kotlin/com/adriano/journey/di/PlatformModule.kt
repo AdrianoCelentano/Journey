@@ -1,9 +1,9 @@
 package com.adriano.journey.di
 
 import com.adriano.journey.IosModelDownloader
-import com.adriano.journey.domain.LargeLanguageModel
-import com.adriano.journey.domain.ModelDownloader
-import com.adriano.journey.domain.NoteRepository
+import com.adriano.journey.data.LargeLanguageModel
+import com.adriano.journey.data.ModelDownloader
+import com.adriano.journey.data.NoteRepository
 import org.koin.core.module.Module
 import org.koin.dsl.module
 

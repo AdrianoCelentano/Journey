@@ -1,5 +1,7 @@
 package com.adriano.journey.presentation
 
 data class JourneyEntryState(
-    val text: String = "",
+    val note: String = "",
+    val search: String = "",
+    val answer: String = "",
 )
