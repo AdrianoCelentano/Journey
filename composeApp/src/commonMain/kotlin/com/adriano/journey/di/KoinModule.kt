@@ -12,8 +12,8 @@ import org.koin.dsl.module
 expect val platformModule: Module
 
 val appModule = module {
-    single { com.adriano.journey.data.LlmProvider() }
-    single { JourneyNotesService(get<LlmProvider>().provide(), get(), get()) }
+    single { LlmProvider() }
+    single { JourneyNotesService(get(), get(), get()) }
     viewModelOf(::JourneyEntryViewModel)
 }
 

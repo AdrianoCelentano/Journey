@@ -1,6 +1,8 @@
 package com.adriano.journey.di
 
 import com.adriano.journey.IosModelDownloader
+import com.adriano.journey.data.AppPreferences
+import com.adriano.journey.data.IosAppPreferences
 import com.adriano.journey.data.LargeLanguageModel
 import com.adriano.journey.data.ModelDownloader
 import com.adriano.journey.data.NoteRepository
@@ -9,6 +11,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 actual val platformModule: Module = module {
+    single<AppPreferences> { IosAppPreferences() }
     single<LargeLanguageModel>(named("local")) {
         object : LargeLanguageModel {
             override suspend fun generateResponse(prompt: String): String {

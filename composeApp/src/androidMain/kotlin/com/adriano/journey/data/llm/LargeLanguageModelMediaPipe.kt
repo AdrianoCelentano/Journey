@@ -4,15 +4,12 @@ import android.app.Application
 import android.util.Log
 import com.adriano.journey.data.LargeLanguageModel
 import com.google.mediapipe.tasks.genai.llminference.LlmInference
-import com.google.mediapipe.tasks.text.textembedder.TextEmbedder
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.time.Duration.Companion.milliseconds
 
 class LargeLanguageModelMediaPipe(
     private val context: Application,

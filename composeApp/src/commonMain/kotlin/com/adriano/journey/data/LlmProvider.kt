@@ -6,7 +6,13 @@ import org.koin.core.qualifier.named
 
 class LlmProvider : KoinComponent {
 
-    var isLocalModelEnabled: Boolean = true
+    private val preferences: AppPreferences by inject()
+
+    var isLocalModelEnabled: Boolean
+        get() = preferences.getBoolean("is_local_model_enabled", true)
+        set(value) {
+            preferences.setBoolean("is_local_model_enabled", value)
+        }
 
     private val localLlm: LargeLanguageModel by inject(named("local"))
 

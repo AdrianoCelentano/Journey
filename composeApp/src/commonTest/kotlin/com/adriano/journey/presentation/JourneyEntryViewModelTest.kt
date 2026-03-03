@@ -32,9 +32,6 @@ class FakeLargeLanguageModel : LargeLanguageModel {
     override suspend fun generateResponse(prompt: String): String = "corrected note"
 }
 
-class FakeLlmProvider(private val model: LargeLanguageModel) : com.adriano.journey.data.LlmProvider() {
-    override fun provide(): LargeLanguageModel = model
-}
 
 class FakeTextEmbedder : JourneyTextEmbedder {
     override suspend fun generateVector(prompt: String): List<Float> = listOf(1f, 2f, 3f)
@@ -47,9 +44,8 @@ class JourneyEntryViewModelTest {
     fun `test update text intent`() {
         val fakeRepo = FakeNoteRepository()
         val fakeLlm = FakeLargeLanguageModel()
-        val fakeLlmProvider = FakeLlmProvider(fakeLlm)
         val fakeEmbedder = FakeTextEmbedder()
-        val service = JourneyNotesService(fakeLlmProvider, fakeEmbedder, fakeRepo)
+        val service = JourneyNotesService(fakeLlm, fakeEmbedder, fakeRepo)
         val viewModel = JourneyEntryViewModel(SavedStateHandle(), service)
         viewModel.onIntent(JourneyEntryIntent.UpdateNoteText("Hello World"))
 
@@ -64,9 +60,8 @@ class JourneyEntryViewModelTest {
         try {
             val fakeRepo = FakeNoteRepository()
             val fakeLlm = FakeLargeLanguageModel()
-            val fakeLlmProvider = FakeLlmProvider(fakeLlm)
             val fakeEmbedder = FakeTextEmbedder()
-            val service = JourneyNotesService(fakeLlmProvider, fakeEmbedder, fakeRepo)
+            val service = JourneyNotesService(fakeLlm, fakeEmbedder, fakeRepo)
             val viewModel = JourneyEntryViewModel(SavedStateHandle(), service)
 
             viewModel.onIntent(JourneyEntryIntent.UpdateNoteText("My new note"))
@@ -92,9 +87,8 @@ class JourneyEntryViewModelTest {
         try {
             val fakeRepo = FakeNoteRepository()
             val fakeLlm = FakeLargeLanguageModel()
-            val fakeLlmProvider = FakeLlmProvider(fakeLlm)
             val fakeEmbedder = FakeTextEmbedder()
-            val service = JourneyNotesService(fakeLlmProvider, fakeEmbedder, fakeRepo)
+            val service = JourneyNotesService(fakeLlm, fakeEmbedder, fakeRepo)
             val viewModel = JourneyEntryViewModel(SavedStateHandle(), service)
 
             viewModel.onIntent(JourneyEntryIntent.UpdateNoteText("   "))

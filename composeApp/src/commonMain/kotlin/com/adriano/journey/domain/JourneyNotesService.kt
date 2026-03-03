@@ -1,18 +1,21 @@
 package com.adriano.journey.domain
 
 import com.adriano.journey.data.JourneyTextEmbedder
-import com.adriano.journey.data.LargeLanguageModel
+import com.adriano.journey.data.LlmProvider
 import com.adriano.journey.data.NoteRepository
 import com.adriano.journey.utils.getCurrentTimeMillis
 import kotlin.math.sqrt
 
 class JourneyNotesService(
-    private val Llm: LargeLanguageModel,
+    private val llmProvider: LlmProvider,
     private val textEmbedder: JourneyTextEmbedder,
     private val noteRepository: NoteRepository,
 ) {
+
+    private val llm get() = llmProvider.provide()
+
     suspend fun addEntry(note: String) {
-        val correctedNote = Llm.generateResponse(saveNotePrompt(note))
+        val correctedNote = llm.generateResponse(saveNotePrompt(note))
         val vector = textEmbedder.generateVector(correctedNote)
         val timestamp = getCurrentTimeMillis()
         noteRepository.saveNote(correctedNote, vector, timestamp)
@@ -38,7 +41,7 @@ class JourneyNotesService(
         val queryVector = textEmbedder.generateVector(search)
         val matchingNotes = findMatchingNotes(notes, queryVector).map { it.content }
         val prompt = searchNotePrompt(matchingNotes, search)
-        return Llm.generateResponse(prompt)
+        return llm.generateResponse(prompt)
     }
 
     private fun searchNotePrompt(notes: List<String>, search: String): String =
