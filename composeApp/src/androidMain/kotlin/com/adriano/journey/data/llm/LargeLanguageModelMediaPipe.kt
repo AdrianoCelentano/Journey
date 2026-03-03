@@ -36,14 +36,16 @@ class LargeLanguageModelMediaPipe(
         try {
             val taskOptions = LlmInference.LlmInferenceOptions.builder()
                 .setModelPath("/data/local/tmp/llm/gemma3-1b-it-int4.task")
-//                .setMaxTokens(1024)
-//                .setMaxTopK(40)
                 .setPreferredBackend(LlmInference.Backend.GPU)
                 .build()
             llmInference = LlmInference.createFromOptions(context, taskOptions)
+        } catch (e: Exception) {
+            Log.e("LargeLanguageModel", "Failed to initialize LLM", e)
+        }
 
+        try {
             val baseOptions = BaseOptions.builder()
-                .setModelAssetPath("/data/local/tmp/llm/embeddinggemma-300M_seq512_mixed-precision.tflite")
+                .setModelAssetPath("/data/local/tmp/llm/universal_sentence_encoder.tflite")
                 .build()
 
             val options = TextEmbedderOptions.builder()
