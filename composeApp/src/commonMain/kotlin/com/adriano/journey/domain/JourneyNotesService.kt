@@ -4,7 +4,6 @@ import com.adriano.journey.data.JourneyTextEmbedder
 import com.adriano.journey.data.LlmProvider
 import com.adriano.journey.data.NoteRepository
 import com.adriano.journey.utils.getCurrentTimeMillis
-import kotlinx.coroutines.withContext
 import kotlin.math.sqrt
 
 class JourneyNotesService(
@@ -16,13 +15,16 @@ class JourneyNotesService(
     private val llm get() = llmProvider.provide()
 
     suspend fun addEntry(note: String) {
-        val correctedNote = llm.generateResponse(saveNotePrompt(note))
-        val vector = textEmbedder.generateVector(correctedNote)
+        val vector = textEmbedder.generateVector(note)
         val timestamp = getCurrentTimeMillis()
-        noteRepository.saveNote(correctedNote, vector, timestamp)
+        noteRepository.saveNote(note, vector, timestamp)
     }
 
-    private fun saveNotePrompt(note: String): String =
+    suspend fun enhanceNote(note: String): String {
+        return llm.generateResponse(enhanceNotePrompt(note))
+    }
+
+    private fun enhanceNotePrompt(note: String): String =
         """You are a strict text editor. Your task is to rewrite the following rough note into grammatically correct, complete sentences.
     
     CRITICAL RULES:

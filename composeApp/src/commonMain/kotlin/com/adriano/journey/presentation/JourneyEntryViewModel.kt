@@ -21,7 +21,7 @@ class JourneyEntryViewModel(
 
     private val _state = MutableStateFlow(
         JourneyEntryState(
-            note = savedStateHandle.get<String>(TEXT_KEY) ?: "",
+            noteInput = savedStateHandle.get<String>(TEXT_KEY) ?: "",
         ),
     )
     val state: StateFlow<JourneyEntryState> = _state.asStateFlow()
@@ -30,34 +30,70 @@ class JourneyEntryViewModel(
         when (intent) {
             is JourneyEntryIntent.UpdateNoteText -> {
                 savedStateHandle[TEXT_KEY] = intent.text
-                _state.update { it.copy(note = intent.text) }
+                _state.update { it.copy(noteInput = intent.text) }
             }
+
             is JourneyEntryIntent.SaveNote -> saveNote()
             is JourneyEntryIntent.SearchNotes -> searchNotes()
             is JourneyEntryIntent.UpdateNoteSearchText -> {
                 savedStateHandle[TEXT_KEY] = intent.text
-                _state.update { it.copy(search = intent.text) }
+                _state.update { it.copy(searchInput = intent.text) }
             }
+
             is JourneyEntryIntent.UpdateDateRange -> {
                 _state.update { it.copy(startDate = intent.startDate, endDate = intent.endDate) }
+            }
+
+            JourneyEntryIntent.EnhanceNote -> enhanceNote()
+        }
+    }
+
+    private fun enhanceNote() {
+        viewModelScope.launch {
+            _state.update { it.copy(addNoteLoading = true) }
+            try {
+                val note = journeyEntryService.enhanceNote(state.value.noteInput)
+                _state.update { it.copy(noteInput = note) }
+            } finally {
+                _state.update { it.copy(addNoteLoading = false) }
             }
         }
     }
 
     private fun searchNotes() {
         viewModelScope.launch {
-            val answer = journeyEntryService.searchEntries(state.value.search)
-            _state.update { it.copy(answer = answer) }
+            _state.update { it.copy(searchLoading = true) }
+            try {
+                val answer = journeyEntryService.searchEntries(state.value.searchInput)
+                _state.update {
+                    it.copy(
+                        questions = _state.value.questions.plus(
+                            Question(
+                                state.value.searchInput,
+                                answer,
+                            ),
+                        ),
+                        searchInput = "",
+                    )
+                }
+            } finally {
+                _state.update { it.copy(searchLoading = false) }
+            }
         }
     }
 
     private fun saveNote() {
-        val currentText = state.value.note
+        val currentText = state.value.noteInput
         if (currentText.isBlank()) return
 
         viewModelScope.launch {
-            journeyEntryService.addEntry(currentText)
-            onIntent(JourneyEntryIntent.UpdateNoteText(""))
+            _state.update { it.copy(addNoteLoading = true) }
+            try {
+                journeyEntryService.addEntry(currentText)
+                onIntent(JourneyEntryIntent.UpdateNoteText(""))
+            } finally {
+                _state.update { it.copy(addNoteLoading = false) }
+            }
         }
     }
 }

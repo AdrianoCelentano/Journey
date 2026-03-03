@@ -8,9 +8,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Send
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -81,17 +84,30 @@ fun SearchScreen(
         Text("Search Notes", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
 
-        Column(modifier = Modifier.weight(1f).fillMaxWidth()) {
-            if (state.answer.isBlank()) {
+        Column(
+            modifier = Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
+        ) {
+            if (state.questions.isEmpty()) {
                 Text(
                     "AI: Hello! What would you like to find?",
                     style = MaterialTheme.typography.bodyLarge,
                 )
             } else {
-                Text(
-                    state.answer,
-                    style = MaterialTheme.typography.bodyLarge,
-                )
+                state.questions.forEach {
+                    Text(
+                        it.question,
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        it.answer,
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                    Spacer(Modifier.height(8.dp))
+                }
+            }
+            if (state.searchLoading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
             }
         }
 
@@ -101,19 +117,26 @@ fun SearchScreen(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            IconButton(onClick = { showDatePicker = true }) {
+            IconButton(
+                onClick = { showDatePicker = true },
+                enabled = !state.searchLoading,
+            ) {
                 Icon(Icons.Default.DateRange, contentDescription = "Date Range")
             }
             Spacer(modifier = Modifier.width(8.dp))
             OutlinedTextField(
-                value = state.search,
+                value = state.searchInput,
                 onValueChange = { viewModel.onIntent(JourneyEntryIntent.UpdateNoteSearchText(it)) },
                 modifier = Modifier.weight(1f),
                 placeholder = { Text("Ask the AI...") },
+                enabled = !state.searchLoading,
             )
             Spacer(modifier = Modifier.width(8.dp))
-            IconButton(onClick = { viewModel.onIntent(JourneyEntryIntent.SearchNotes) }) {
-                Icon(Icons.Default.Send, contentDescription = "Send")
+            IconButton(
+                onClick = { viewModel.onIntent(JourneyEntryIntent.SearchNotes) },
+                enabled = !state.searchLoading,
+            ) {
+                Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Send")
             }
         }
     }

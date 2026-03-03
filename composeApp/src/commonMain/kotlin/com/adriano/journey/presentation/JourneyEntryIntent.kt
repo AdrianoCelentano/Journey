@@ -5,5 +5,7 @@ sealed interface JourneyEntryIntent {
     data class UpdateNoteSearchText(val text: String) : JourneyEntryIntent
     object SaveNote : JourneyEntryIntent
     object SearchNotes : JourneyEntryIntent
+    object EnhanceNote : JourneyEntryIntent
+
     data class UpdateDateRange(val startDate: Long?, val endDate: Long?) : JourneyEntryIntent
 }
