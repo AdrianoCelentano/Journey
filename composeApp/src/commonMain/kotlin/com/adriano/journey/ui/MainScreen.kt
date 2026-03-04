@@ -1,5 +1,7 @@
 package com.adriano.journey.ui
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -21,10 +23,12 @@ enum class BottomNavScreen(val title: String) {
 
 @Composable
 fun MainScreen(
+    modifier: Modifier = Modifier,
     currentScreen: BottomNavScreen = BottomNavScreen.Add,
     onScreenSelected: (BottomNavScreen) -> Unit = {},
 ) {
     Scaffold(
+        modifier = modifier,
         bottomBar = {
             JourneyBottomBar(
                 currentScreen = currentScreen,
@@ -32,7 +36,9 @@ fun MainScreen(
             )
         },
     ) { paddingValues ->
-        val modifier = Modifier.padding(paddingValues)
+        val modifier = Modifier
+            .padding(paddingValues)
+            .imePadding()
         when (currentScreen) {
             BottomNavScreen.Add -> AddScreen(modifier)
             BottomNavScreen.Search -> SearchScreen(modifier)
