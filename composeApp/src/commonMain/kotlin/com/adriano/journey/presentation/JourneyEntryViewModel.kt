@@ -88,7 +88,7 @@ class JourneyEntryViewModel(
             try {
                 journeyEntryService.addEntry(state.value.noteInput)
             } finally {
-                _state.update { it.copy(addNoteLoading = false, noteInput = "") }
+                _state.update { it.copy(addNoteLoading = false) }
             }
         }
     }

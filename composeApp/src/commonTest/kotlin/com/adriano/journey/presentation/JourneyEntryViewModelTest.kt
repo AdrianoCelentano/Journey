@@ -69,9 +69,10 @@ class JourneyEntryViewModelTest {
             val fakeProvider = FakeLlmProvider(fakeLlm)
             val fakeEmbedder = FakeTextEmbedder()
             val service = JourneyNotesService(fakeProvider, fakeEmbedder, fakeRepo)
-            val viewModel = JourneyEntryViewModel(SavedStateHandle(), service)
 
-            viewModel.onIntent(JourneyEntryIntent.UpdateNoteText("My new note"))
+            val savedState = SavedStateHandle(mapOf("journey_entry_text" to "My new note"))
+            val viewModel = JourneyEntryViewModel(savedState, service)
+
             viewModel.onIntent(JourneyEntryIntent.SaveNote)
 
             advanceUntilIdle()
@@ -97,15 +98,103 @@ class JourneyEntryViewModelTest {
             val fakeProvider = FakeLlmProvider(fakeLlm)
             val fakeEmbedder = FakeTextEmbedder()
             val service = JourneyNotesService(fakeProvider, fakeEmbedder, fakeRepo)
-            val viewModel = JourneyEntryViewModel(SavedStateHandle(), service)
 
-            viewModel.onIntent(JourneyEntryIntent.UpdateNoteText("   "))
+            val savedState = SavedStateHandle(mapOf("journey_entry_text" to "   "))
+            val viewModel = JourneyEntryViewModel(savedState, service)
+
             viewModel.onIntent(JourneyEntryIntent.SaveNote)
 
             advanceUntilIdle()
 
             assertEquals("   ", viewModel.state.value.noteInput)
             assertEquals(0, fakeRepo.savedNotes.size)
+        } finally {
+            Dispatchers.resetMain()
+        }
+    }
+
+    @Test
+    fun `test UpdateNoteSearchText intent updates search input text`() {
+        val fakeRepo = FakeNoteRepository()
+        val fakeLlm = FakeLargeLanguageModel()
+        val fakeProvider = FakeLlmProvider(fakeLlm)
+        val fakeEmbedder = FakeTextEmbedder()
+        val service = JourneyNotesService(fakeProvider, fakeEmbedder, fakeRepo)
+        val viewModel = JourneyEntryViewModel(SavedStateHandle(), service)
+        viewModel.onIntent(JourneyEntryIntent.UpdateNoteSearchText("Search query"))
+
+        assertEquals("Search query", viewModel.state.value.searchInput)
+    }
+
+    @Test
+    fun `test UpdateDateRange intent updates dates`() {
+        val fakeRepo = FakeNoteRepository()
+        val fakeLlm = FakeLargeLanguageModel()
+        val fakeProvider = FakeLlmProvider(fakeLlm)
+        val fakeEmbedder = FakeTextEmbedder()
+        val service = JourneyNotesService(fakeProvider, fakeEmbedder, fakeRepo)
+        val viewModel = JourneyEntryViewModel(SavedStateHandle(), service)
+
+        val startDate = 1000L
+        val endDate = 2000L
+        viewModel.onIntent(JourneyEntryIntent.UpdateDateRange(startDate, endDate))
+
+        assertEquals(startDate, viewModel.state.value.startDate)
+        assertEquals(endDate, viewModel.state.value.endDate)
+    }
+
+    @Test
+    fun `test EnhanceNote intent triggers service and updates text while managing loading state`() = runTest {
+        val dispatcher = StandardTestDispatcher(testScheduler)
+        Dispatchers.setMain(dispatcher)
+
+        try {
+            val fakeRepo = FakeNoteRepository()
+            val fakeLlm = FakeLargeLanguageModel()
+            val fakeProvider = FakeLlmProvider(fakeLlm)
+            val fakeEmbedder = FakeTextEmbedder()
+            val service = JourneyNotesService(fakeProvider, fakeEmbedder, fakeRepo)
+            val savedState = SavedStateHandle(mapOf("journey_entry_text" to "Text to enhance"))
+            val viewModel = JourneyEntryViewModel(savedState, service)
+
+            // Trigger enhance
+            viewModel.onIntent(JourneyEntryIntent.EnhanceNote)
+
+            advanceUntilIdle()
+
+            assertEquals("corrected note", viewModel.state.value.noteInput)
+            assertEquals(false, viewModel.state.value.addNoteLoading)
+        } finally {
+            Dispatchers.resetMain()
+        }
+    }
+
+    @Test
+    fun `test SearchNotes intent triggers service and adds answer to questions while managing loading state`() = runTest {
+        val dispatcher = StandardTestDispatcher(testScheduler)
+        Dispatchers.setMain(dispatcher)
+
+        try {
+            val fakeRepo = FakeNoteRepository()
+            val fakeLlm = FakeLargeLanguageModel()
+            val fakeProvider = FakeLlmProvider(fakeLlm)
+            val fakeEmbedder = FakeTextEmbedder()
+            val service = JourneyNotesService(fakeProvider, fakeEmbedder, fakeRepo)
+
+            val viewModel = JourneyEntryViewModel(SavedStateHandle(), service)
+
+            // Setup the search text by creating a new state or updating the UI
+            viewModel.onIntent(JourneyEntryIntent.UpdateNoteSearchText("What did I do today?"))
+            advanceUntilIdle()
+
+            viewModel.onIntent(JourneyEntryIntent.SearchNotes)
+            advanceUntilIdle()
+
+            assertEquals(1, viewModel.state.value.questions.size)
+            assertEquals("What did I do today?", viewModel.state.value.questions.first().question)
+            assertEquals("corrected note", viewModel.state.value.questions.first().answer)
+            assertEquals("", viewModel.state.value.searchInput) // Check it resets
+            assertEquals(false, viewModel.state.value.searchLoading)
         } finally {
             Dispatchers.resetMain()
         }

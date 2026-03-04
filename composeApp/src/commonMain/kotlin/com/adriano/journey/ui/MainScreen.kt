@@ -1,6 +1,6 @@
 package com.adriano.journey.ui
 
-import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -38,6 +38,7 @@ fun MainScreen(
     ) { paddingValues ->
         val modifier = Modifier
             .padding(paddingValues)
+            .consumeWindowInsets(paddingValues)
             .imePadding()
         when (currentScreen) {
             BottomNavScreen.Add -> AddScreen(modifier)
