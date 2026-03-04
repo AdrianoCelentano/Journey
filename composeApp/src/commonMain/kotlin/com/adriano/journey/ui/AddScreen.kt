@@ -1,5 +1,6 @@
 package com.adriano.journey.ui
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -38,33 +39,33 @@ fun AddScreen(modifier: Modifier = Modifier, viewModel: JourneyEntryViewModel = 
         Text("New Entry", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (state.addNoteLoading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-            Spacer(modifier = Modifier.height(16.dp))
-        }
-
         OutlinedTextField(
             value = state.noteInput,
             onValueChange = { viewModel.onIntent(JourneyEntryIntent.UpdateNoteText(it)) },
             modifier = Modifier.fillMaxWidth().weight(1f),
             placeholder = { Text("What's on your mind?") },
-            enabled = !state.addNoteLoading,
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Row {
+        Row(
+
+        ) {
             Button(
                 onClick = { viewModel.onIntent(JourneyEntryIntent.EnhanceNote) },
-                modifier = Modifier.weight(0.5f),
+                modifier = Modifier.weight(0.5f).height(48.dp),
                 enabled = !state.addNoteLoading && !state.noteInput.isBlank(),
             ) {
-                Icon(imageVector = Icons.Default.Abc, contentDescription = null)
-                Spacer(Modifier.width(5.dp))
-                Text("Enhance Note")
+                if (state.addNoteLoading) {
+                    CircularProgressIndicator(modifier = Modifier.height(20.dp))
+                } else {
+                    Icon(imageVector = Icons.Default.Abc, contentDescription = null)
+                    Spacer(Modifier.width(5.dp))
+                    Text("Enhance Note")
+                }
             }
             Spacer(Modifier.width(4.dp))
             Button(
                 onClick = { viewModel.onIntent(JourneyEntryIntent.SaveNote) },
-                modifier = Modifier.weight(0.5f),
+                modifier = Modifier.weight(0.5f).height(48.dp),
                 enabled = !state.addNoteLoading && !state.noteInput.isBlank(),
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = null)
