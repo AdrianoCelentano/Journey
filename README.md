@@ -1,35 +1,40 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# 🧠 Journey: AI-Powered Second Brain
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)
+![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)
+![AI](https://img.shields.io/badge/AI%20%2F%20RAG-Offline_First-blue?style=for-the-badge)
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+**Journey** is a privacy-first, AI-powered note-taking Android application. It acts as a conceptual second brain, allowing users to converse with their past thoughts using Retrieval-Augmented Generation (RAG) and vector embeddings.
 
-### Build and Run Android Application
+## 🚀 Features
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+* **Semantic Search via RAG:** Instead of standard keyword matching, notes are stored as mathematical vector embeddings. When searching, the app converts your query into a concept, retrieves the top 5 most relevant notes, and uses an LLM to formulate a precise answer based *only* on your historical data.
+* **Offline-First & Privacy Focused:** Users can toggle between a fully local AI model (running on-device) for maximum privacy, or connect to a cloud-based LLM for more complex reasoning. This switch happens dynamically at runtime—no app restart required.
+* **Smart Enhancement:** A drafting assistant that gently polishes grammar and structure without altering the original meaning or hallucinating new facts.
+* **Time-Traveling Ideas:** Filter your conceptual searches by precise date ranges to see how your thoughts on a specific topic have evolved over time. (Powered by standard UI date pickers for reliable precision before hitting the vector database).
 
-### Build and Run iOS Application
+## 🏗 Architecture & Domain Logic
 
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+Journey implements a clean, decoupled architecture focusing on state management and efficient database querying.
 
----
+### Note Creation Flow
+1. **Drafting:** User writes a note.
+2. **Enhancing (Optional):** AI polishes the text.
+3. **Saving & Vectorizing:** The note is saved to the local database, and a vector embedding (mathematical representation) is generated and stored alongside it for semantic understanding.
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+### Semantic Search Flow
+1. **Analyze:** User asks a question; the app converts it into a vector concept.
+2. **Retrieve:** The local vector database is queried to find the top 5 most conceptually similar notes (bounded by a user-defined date range).
+3. **Generate:** The LLM reads the retrieved notes and formulates a direct answer based purely on that context.
+
+## 🛠 Tech Stack
+* **Language:** Kotlin
+* **UI Framework:** Jetpack Compose Multiplatform
+* **Architecture:** MVVM / Clean Architecture
+* **AI/Local Models:** MediaPipe (Gemma) & ML Kit GenAI (Gemini Nano)
+* **Database:** Room + SQLite Vector
+
+## 🤝 Let's Connect
+I built Journey to solve my own problem of organizing and navigating my thoughts. I am currently looking for my next role in Android & AI Development. 
+
+[Connect with me on LinkedIn](https://www.linkedin.com/in/adrianschaefer/)
