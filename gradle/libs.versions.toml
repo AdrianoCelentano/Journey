@@ -21,6 +21,8 @@ koin = "4.2.0-RC1"
 room = "2.8.4"
 gson = "2.10.1"
 googleServices = "4.4.4"
+objectbox = "4.0.2"
+
 [libraries]
 firebase-ai = { module = "com.google.firebase:firebase-ai" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -54,6 +56,9 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 [plugins]
+objectbox = { id = "io.objectbox", version.ref = "objectbox" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 googleServices = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }

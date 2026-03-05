@@ -9,7 +9,8 @@ plugins {
     alias(libs.plugins.spotless)
     alias(libs.plugins.detekt)
     alias(libs.plugins.googleServices)
-    kotlin("kapt")
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.objectbox)
 }
 
 kotlin {
@@ -100,4 +101,3 @@ dependencies {
     debugImplementation(libs.compose.uiTooling)
     add("kapt", libs.room.compiler)
 }
-
