@@ -99,6 +99,14 @@ android {
     assetPacks += mutableSetOf(":gemma_model")
 }
 
+kapt {
+    arguments {
+        arg("objectbox.modelPath", "$projectDir/schemas/objectbox.json")
+        arg("objectbox.myObjectBoxPackage", "com.adriano.journey.data.db.objectbox")
+//        arg("objectbox.debug", true)
+    }
+}
+
 dependencies {
     debugImplementation(libs.compose.uiTooling)
     add("kapt", libs.room.compiler)
