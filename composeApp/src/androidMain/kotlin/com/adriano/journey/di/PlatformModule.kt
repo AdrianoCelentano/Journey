@@ -5,8 +5,8 @@ import com.adriano.journey.data.AppPreferences
 import com.adriano.journey.data.JourneyTextEmbedder
 import com.adriano.journey.data.LargeLanguageModel
 import com.adriano.journey.data.NoteRepository
-import com.adriano.journey.data.db.AppDatabase
-import com.adriano.journey.data.db.NoteDao
+import com.adriano.journey.data.db.room.AppDatabase
+import com.adriano.journey.data.db.room.NoteDao
 import com.adriano.journey.data.db.NoteRepositoryImpl
 import com.adriano.journey.data.llm.LargeLanguageModelGeminiRemote
 import com.adriano.journey.data.llm.LargeLanguageModelMediaPipe

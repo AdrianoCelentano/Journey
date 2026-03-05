@@ -10,7 +10,6 @@ plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.googleServices)
     alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.objectbox)
 }
 
 kotlin {
@@ -42,6 +41,9 @@ kotlin {
             implementation(libs.firebase.ai)
             implementation(libs.room.runtime)
             implementation(libs.room.ktx)
+            implementation(libs.objectbox.java)
+            implementation(libs.objectbox.kotlin)
+            implementation(libs.objectbox.android)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -100,4 +102,11 @@ android {
 dependencies {
     debugImplementation(libs.compose.uiTooling)
     add("kapt", libs.room.compiler)
+    add("kapt", libs.objectbox.processor)
 }
+
+tasks.withType<io.objectbox.gradle.PrepareTask>().configureEach {
+    notCompatibleWithConfigurationCache("ObjectBox does not yet support the Gradle Configuration Cache")
+}
+
+apply(plugin = "io.objectbox")

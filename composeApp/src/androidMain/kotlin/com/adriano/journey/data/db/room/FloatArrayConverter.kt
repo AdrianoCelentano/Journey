@@ -1,4 +1,4 @@
-package com.adriano.journey.data.db
+package com.adriano.journey.data.db.room
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
