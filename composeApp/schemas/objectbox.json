@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:7296293108339158079",
-      "lastPropertyId": "3:3985132721164632301",
+      "lastPropertyId": "4:3177971952697939522",
       "name": "NoteEntity",
       "properties": [
         {
@@ -23,6 +23,11 @@
           "id": "3:3985132721164632301",
           "name": "timestamp",
           "type": 6
+        },
+        {
+          "id": "4:3177971952697939522",
+          "name": "contentVector",
+          "type": 28
         }
       ],
       "relations": []

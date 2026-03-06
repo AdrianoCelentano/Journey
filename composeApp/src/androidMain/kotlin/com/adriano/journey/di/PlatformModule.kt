@@ -9,7 +9,7 @@ import com.adriano.journey.data.NoteRepository
 import com.adriano.journey.data.db.objectbox.MyObjectBox
 import com.adriano.journey.data.db.room.AppDatabase
 import com.adriano.journey.data.db.room.NoteDao
-import com.adriano.journey.data.db.room.NoteRepositoryImpl
+import com.adriano.journey.data.db.room.NoteRepositoryRoom
 import com.adriano.journey.data.llm.LargeLanguageModelGeminiRemote
 import com.adriano.journey.data.llm.LargeLanguageModelMediaPipe
 import com.adriano.journey.data.llm.TextEmbedderMediaPipe
@@ -42,5 +42,5 @@ actual val platformModule: Module = module {
             .build()
     }
     single<NoteDao> { get<AppDatabase>().noteDao() }
-    single<NoteRepository> { NoteRepositoryImpl(get()) }
+    single<NoteRepository> { NoteRepositoryRoom(get()) }
 }

@@ -41,8 +41,8 @@ class JourneyNotesService(
     suspend fun searchEntries(search: String): String {
         val queryVector = textEmbedder.generateVector(search)
         val notes = noteRepository.loadMatchingNotes(queryVector)
-        val matchingNoteContents = notes.map { it.content }
-        val prompt = searchNotePrompt(matchingNoteContents, search)
+        val notesContents = notes.map { it.content }
+        val prompt = searchNotePrompt(notesContents, search)
         return llm.generateResponse(prompt)
     }
 

@@ -8,5 +8,6 @@ data class NoteEntity(
     @Id
     var id: Long = 0,
     var content: String,
+    var contentVector: FloatArray,
     var timestamp: Long,
 )

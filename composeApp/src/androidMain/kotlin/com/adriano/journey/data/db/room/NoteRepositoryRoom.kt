@@ -4,7 +4,7 @@ import com.adriano.journey.data.NoteRepository
 import com.adriano.journey.domain.Note
 import kotlin.math.sqrt
 
-class NoteRepositoryImpl(private val noteDao: NoteDao) : NoteRepository {
+class NoteRepositoryRoom(private val noteDao: NoteDao) : NoteRepository {
 
     override suspend fun saveNote(content: String, vector: FloatArray, timestamp: Long) {
         val entity = NoteEntity(
@@ -65,5 +65,4 @@ class NoteRepositoryImpl(private val noteDao: NoteDao) : NoteRepository {
             )
         }
     }
-
 }
