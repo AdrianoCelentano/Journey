@@ -1,8 +1,6 @@
-package com.adriano.journey.data.db
+package com.adriano.journey.data.db.room
 
 import com.adriano.journey.data.NoteRepository
-import com.adriano.journey.data.db.room.NoteDao
-import com.adriano.journey.data.db.room.NoteEntity
 import com.adriano.journey.domain.Note
 
 class NoteRepositoryImpl(private val noteDao: NoteDao) : NoteRepository {
