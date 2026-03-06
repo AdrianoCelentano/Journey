@@ -84,10 +84,12 @@ class JourneyEntryViewModel(
 
     private fun saveNote() {
         viewModelScope.launch {
+            val textToSave = state.value.noteInput
             _state.update { it.copy(addNoteLoading = true, noteInput = "") }
             try {
-                journeyEntryService.addEntry(state.value.noteInput)
+                journeyEntryService.addEntry(textToSave)
             } finally {
+                onIntent(JourneyEntryIntent.UpdateNoteText(""))
                 _state.update { it.copy(addNoteLoading = false) }
             }
         }

@@ -19,12 +19,16 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class FakeNoteRepository : NoteRepository {
-    val savedNotes = mutableListOf<Triple<String, List<Float>, Long>>()
-    override suspend fun saveNote(content: String, vector: List<Float>, timestamp: Long) {
+    val savedNotes = mutableListOf<Triple<String, FloatArray, Long>>()
+    override suspend fun saveNote(content: String, vector: FloatArray, timestamp: Long) {
         savedNotes.add(Triple(content, vector, timestamp))
     }
 
     override suspend fun loadNotes(): List<Note> {
+        return emptyList()
+    }
+
+    override suspend fun loadMatchingNotes(queryVector: FloatArray): List<Note> {
         return emptyList()
     }
 }
@@ -39,7 +43,7 @@ class FakeLlmProvider(private val model: LargeLanguageModel) : LlmProvider() {
 }
 
 class FakeTextEmbedder : JourneyTextEmbedder {
-    override suspend fun generateVector(prompt: String): List<Float> = listOf(1f, 2f, 3f)
+    override suspend fun generateVector(prompt: String): FloatArray = floatArrayOf(1f, 2f, 3f)
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -81,7 +85,7 @@ class JourneyEntryViewModelTest {
             assertEquals(1, fakeRepo.savedNotes.size)
             val savedNote = fakeRepo.savedNotes.first()
             assertEquals("My new note", savedNote.first)
-            assertTrue(savedNote.second.isNotEmpty())
+            assertTrue(savedNote.second.size > 0)
         } finally {
             Dispatchers.resetMain()
         }
@@ -106,7 +110,7 @@ class JourneyEntryViewModelTest {
 
             advanceUntilIdle()
 
-            assertEquals("   ", viewModel.state.value.noteInput)
+            assertEquals("", viewModel.state.value.noteInput)
             assertEquals(0, fakeRepo.savedNotes.size)
         } finally {
             Dispatchers.resetMain()

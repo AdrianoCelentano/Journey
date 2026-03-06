@@ -26,8 +26,9 @@ actual val platformModule: Module = module {
     }
     single<NoteRepository> {
         object : NoteRepository {
-            override suspend fun saveNote(content: String, vector: List<Float>, timestamp: Long) {}
+            override suspend fun saveNote(content: String, vector: FloatArray, timestamp: Long) {}
             override suspend fun loadNotes(): List<com.adriano.journey.domain.Note> = emptyList()
+            override suspend fun loadMatchingNotes(queryVector: FloatArray): List<com.adriano.journey.domain.Note> = emptyList()
         }
     }
 }

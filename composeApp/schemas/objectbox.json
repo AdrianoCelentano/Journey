@@ -27,14 +27,16 @@
         {
           "id": "4:3177971952697939522",
           "name": "contentVector",
-          "type": 28
+          "indexId": "1:431936748807638190",
+          "type": 28,
+          "flags": 8
         }
       ],
       "relations": []
     }
   ],
   "lastEntityId": "1:7296293108339158079",
-  "lastIndexId": "0:0",
+  "lastIndexId": "1:431936748807638190",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

@@ -10,14 +10,16 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class FakeNoteRepository : NoteRepository {
-    val savedNotes = mutableListOf<Triple<String, List<Float>, Long>>()
+    val savedNotes = mutableListOf<Triple<String, FloatArray, Long>>()
     var notesToReturn = emptyList<Note>()
 
-    override suspend fun saveNote(content: String, vector: List<Float>, timestamp: Long) {
+    override suspend fun saveNote(content: String, vector: FloatArray, timestamp: Long) {
         savedNotes.add(Triple(content, vector, timestamp))
     }
 
     override suspend fun loadNotes(): List<Note> = notesToReturn
+
+    override suspend fun loadMatchingNotes(queryVector: FloatArray): List<Note> = notesToReturn
 }
 
 class FakeLargeLanguageModel : LargeLanguageModel {
@@ -36,8 +38,8 @@ class FakeLlmProvider(private val model: LargeLanguageModel) : LlmProvider() {
 }
 
 class FakeTextEmbedder : JourneyTextEmbedder {
-    var vectorToReturn = listOf(1f, 2f, 3f)
-    override suspend fun generateVector(prompt: String): List<Float> = vectorToReturn
+    var vectorToReturn = floatArrayOf(1f, 2f, 3f)
+    override suspend fun generateVector(prompt: String): FloatArray = vectorToReturn
 }
 
 class JourneyNotesServiceTest {
@@ -48,7 +50,7 @@ class JourneyNotesServiceTest {
         val fakeLlm = FakeLargeLanguageModel()
         val fakeProvider = FakeLlmProvider(fakeLlm)
         val fakeEmbedder = FakeTextEmbedder()
-        fakeEmbedder.vectorToReturn = listOf(0.1f, 0.2f, 0.3f)
+        fakeEmbedder.vectorToReturn = floatArrayOf(0.1f, 0.2f, 0.3f)
 
         val service = JourneyNotesService(fakeProvider, fakeEmbedder, fakeRepo)
 
@@ -57,7 +59,7 @@ class JourneyNotesServiceTest {
         assertEquals(1, fakeRepo.savedNotes.size)
         val savedNote = fakeRepo.savedNotes.first()
         assertEquals("A test note", savedNote.first)
-        assertEquals(listOf(0.1f, 0.2f, 0.3f), savedNote.second)
+        assertTrue(floatArrayOf(0.1f, 0.2f, 0.3f).contentEquals(savedNote.second))
     }
 
     @Test
@@ -81,9 +83,9 @@ class JourneyNotesServiceTest {
     fun `test searchEntries finds match using cosine similarity and returns LLM formulated answer`() = runTest {
         val fakeRepo = FakeNoteRepository()
         // Note 1: similar vector to search vector
-        val note1 = Note(1, "Similar Note content", listOf(1.0f, 0.0f, 0.0f), 0L)
+        val note1 = Note(1, "Similar Note content", floatArrayOf(1.0f, 0.0f, 0.0f), 0L)
         // Note 2: completely different vector
-        val note2 = Note(2, "Different Note content", listOf(0.0f, 1.0f, 0.0f), 0L)
+        val note2 = Note(2, "Different Note content", floatArrayOf(0.0f, 1.0f, 0.0f), 0L)
 
         fakeRepo.notesToReturn = listOf(note1, note2)
 
@@ -92,7 +94,7 @@ class JourneyNotesServiceTest {
         val fakeProvider = FakeLlmProvider(fakeLlm)
         val fakeEmbedder = FakeTextEmbedder()
         // Vector pointing in the same direction as note1
-        fakeEmbedder.vectorToReturn = listOf(1.0f, 0.0f, 0.0f)
+        fakeEmbedder.vectorToReturn = floatArrayOf(1.0f, 0.0f, 0.0f)
 
         val service = JourneyNotesService(fakeProvider, fakeEmbedder, fakeRepo)
 
