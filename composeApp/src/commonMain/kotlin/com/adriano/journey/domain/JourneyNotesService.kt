@@ -4,7 +4,6 @@ import com.adriano.journey.data.JourneyTextEmbedder
 import com.adriano.journey.data.LlmProvider
 import com.adriano.journey.data.NoteRepository
 import com.adriano.journey.utils.getCurrentTimeMillis
-import kotlin.math.sqrt
 
 class JourneyNotesService(
     private val llmProvider: LlmProvider,
@@ -40,11 +39,10 @@ class JourneyNotesService(
     Corrected Note:"""
 
     suspend fun searchEntries(search: String): String {
-        val notes = noteRepository.loadNotes()
-
         val queryVector = textEmbedder.generateVector(search)
-        val matchingNotes = findMatchingNotes(notes, queryVector).map { it.content }
-        val prompt = searchNotePrompt(matchingNotes, search)
+        val notes = noteRepository.loadMatchingNotes(queryVector)
+        val matchingNoteContents = notes.map { it.content }
+        val prompt = searchNotePrompt(matchingNoteContents, search)
         return llm.generateResponse(prompt)
     }
 
@@ -62,34 +60,4 @@ class JourneyNotesService(
         QUESTION: $search
         
         ANSWER:"""
-
-    private fun findMatchingNotes(
-        notes: List<Note>,
-        queryVector: List<Float>,
-    ): List<Note> = notes
-        .map { note ->
-            val score = queryVector.cosineSimilarity(note.contentVector.toFloatArray())
-            note to score
-        }
-        .sortedByDescending { it.second }
-        .take(5)
-        .map { it.first }
-
-    fun List<Float>.cosineSimilarity(other: FloatArray): Float {
-        var dotProduct = 0.0f
-        var normA = 0.0f
-        var normB = 0.0f
-
-        for (i in this.indices) {
-            dotProduct += this[i] * other[i]
-            normA += this[i] * this[i]
-            normB += other[i] * other[i]
-        }
-
-        return if (normA == 0.0f || normB == 0.0f) {
-            0.0f
-        } else {
-            (dotProduct / (sqrt(normA) * sqrt(normB)))
-        }
-    }
 }

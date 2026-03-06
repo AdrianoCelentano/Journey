@@ -40,14 +40,14 @@ class TextEmbedderMediaPipe(
         }
     }
 
-    override suspend fun generateVector(prompt: String): List<Float> = withContext(defaultDispatcher) {
+    override suspend fun generateVector(prompt: String): FloatArray = withContext(defaultDispatcher) {
         val textEmbedder = textEmbedderDeferred.await()
         try {
             val result = textEmbedder.embed(prompt)
-            result.embeddingResult().embeddings().get(0).floatEmbedding().toList()
+            result.embeddingResult().embeddings().get(0).floatEmbedding()
         } catch (e: Exception) {
             Log.e("LargeLanguageModel", "Error generating vector", e)
-            emptyList()
+            floatArrayOf()
         }
     }
 }
