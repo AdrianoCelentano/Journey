@@ -1,5 +1,6 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -11,6 +12,13 @@ plugins {
     alias(libs.plugins.googleServices)
     alias(libs.plugins.kotlin.kapt)
 }
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+val geminiApiKey = localProperties.getProperty("GEMINI_API_KEY") ?: ""
 
 kotlin {
     androidTarget {
@@ -39,6 +47,9 @@ kotlin {
             implementation(libs.mediapipe.tasks.text)
             implementation(project.dependencies.platform("com.google.firebase:firebase-bom:34.10.0"))
             implementation(libs.firebase.ai)
+            implementation(libs.firebase.vertexai)
+            implementation("com.google.genai:google-genai:1.0.0")
+            implementation(libs.genai.prompt)
             implementation(libs.room.runtime)
             implementation(libs.room.ktx)
             implementation(libs.objectbox.java)
@@ -77,10 +88,14 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+
+        buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "META-INF/DEPENDENCIES"
         }
     }
     buildTypes {
@@ -91,6 +106,9 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+    buildFeatures {
+        buildConfig = true
     }
     lint {
         abortOnError = true
