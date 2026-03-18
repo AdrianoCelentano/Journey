@@ -11,7 +11,7 @@
 * **Semantic Search via RAG:** Instead of standard keyword matching, notes are stored as mathematical vector embeddings. When searching, the app converts your query into a concept, retrieves the top 5 most relevant notes, and uses an LLM to formulate a precise answer based *only* on your historical data.
 * **Offline-First & Privacy Focused:** Users can toggle between a fully local AI model (running on-device) for maximum privacy, or connect to a cloud-based LLM for more complex reasoning. This switch happens dynamically at runtime—no app restart required.
 * **Smart Enhancement:** A drafting assistant that gently polishes grammar and structure without altering the original meaning or hallucinating new facts.
-* **Time-Traveling Ideas:** Filter your conceptual searches by precise date ranges to see how your thoughts on a specific topic have evolved over time. (Powered by standard UI date pickers for reliable precision before hitting the vector database).
+* **Time-Traveling Ideas:** Filter your conceptual searches by precise date ranges to see how your thoughts on a specific topic have evolved over time.
 
 ## 🏗 Architecture & Domain Logic
 
