@@ -4,11 +4,11 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
 
-open class LlmProvider : KoinComponent {
+class LlmProvider : KoinComponent {
 
     private val preferences: AppPreferences by inject()
 
-    open var isLocalModelEnabled: Boolean
+    var isLocalModelEnabled: Boolean
         get() = preferences.getBoolean("is_local_model_enabled", true)
         set(value) {
             preferences.setBoolean("is_local_model_enabled", value)
@@ -18,7 +18,7 @@ open class LlmProvider : KoinComponent {
 
     private val remoteLlm: LargeLanguageModel by inject(named("remote"))
 
-    open fun provide(): LargeLanguageModel {
+    fun provide(): LargeLanguageModel {
         return if (isLocalModelEnabled) localLlm else remoteLlm
     }
 }

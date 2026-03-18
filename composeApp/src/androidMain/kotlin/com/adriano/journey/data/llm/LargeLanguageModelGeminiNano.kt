@@ -5,20 +5,28 @@ import com.google.mlkit.genai.common.DownloadStatus
 import com.google.mlkit.genai.common.FeatureStatus
 import com.google.mlkit.genai.prompt.GenerateContentResponse
 import com.google.mlkit.genai.prompt.Generation
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
 
 class LargeLanguageModelGeminiNano : LargeLanguageModel {
 
     companion object {
-        fun isSupported(): Boolean = runBlocking {
-            try {
-                val status = Generation.getClient().checkStatus()
-                status != FeatureStatus.UNAVAILABLE
-            } catch (e: Exception) {
-                false
+        var _isSupported: Boolean = false
+
+        init {
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val status = Generation.getClient().checkStatus()
+                    _isSupported = status != FeatureStatus.UNAVAILABLE
+                } catch (e: Exception) {
+                    _isSupported = false
+                }
             }
         }
+
+        fun isSupported(): Boolean = _isSupported
     }
 
     private val generativeModel = Generation.getClient()
@@ -31,11 +39,11 @@ class LargeLanguageModelGeminiNano : LargeLanguageModel {
                 downloadStatus is DownloadStatus.DownloadCompleted || downloadStatus is DownloadStatus.DownloadFailed
             }.also {
                 if (it is DownloadStatus.DownloadFailed) {
-                    throw IllegalStateException("Failed to download Gemini Nano: ${it.e?.message}")
+                    return ""
                 }
             }
-        } else if (status == FeatureStatus.UNAVAILABLE) {
-            throw IllegalStateException("Gemini Nano is not supported on this device.")
+        } else if (status != FeatureStatus.AVAILABLE) {
+            return ""
         }
 
         return generativeModel.generateContent(prompt).text

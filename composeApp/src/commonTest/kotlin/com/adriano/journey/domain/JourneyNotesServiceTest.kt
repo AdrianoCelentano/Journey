@@ -1,13 +1,27 @@
 package com.adriano.journey.domain
 
+import com.adriano.journey.data.AppPreferences
 import com.adriano.journey.data.JourneyTextEmbedder
 import com.adriano.journey.data.LargeLanguageModel
 import com.adriano.journey.data.LlmProvider
 import com.adriano.journey.data.NoteRepository
 import kotlinx.coroutines.test.runTest
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
+import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+
+class FakeAppPreferences : AppPreferences {
+    private val prefs = mutableMapOf<String, Any>()
+    override fun getBoolean(key: String, defaultValue: Boolean): Boolean = prefs[key] as? Boolean ?: defaultValue
+    override fun setBoolean(key: String, value: Boolean) {
+        prefs[key] = value
+    }
+}
 
 class FakeNoteRepository : NoteRepository {
     val savedNotes = mutableListOf<Triple<String, FloatArray, Long>>()
@@ -32,11 +46,6 @@ class FakeLargeLanguageModel : LargeLanguageModel {
     }
 }
 
-class FakeLlmProvider(private val model: LargeLanguageModel) : LlmProvider() {
-    override var isLocalModelEnabled: Boolean = true
-    override fun provide(): LargeLanguageModel = model
-}
-
 class FakeTextEmbedder : JourneyTextEmbedder {
     var vectorToReturn = floatArrayOf(1f, 2f, 3f)
     override suspend fun generateVector(prompt: String): FloatArray = vectorToReturn
@@ -44,11 +53,29 @@ class FakeTextEmbedder : JourneyTextEmbedder {
 
 class JourneyNotesServiceTest {
 
+    @AfterTest
+    fun tearDown() {
+        stopKoin()
+    }
+
+    private fun setupKoin(fakeLlm: FakeLargeLanguageModel) {
+        startKoin {
+            modules(
+                module {
+                    single<AppPreferences> { FakeAppPreferences() }
+                    single<LargeLanguageModel>(named("local")) { fakeLlm }
+                    single<LargeLanguageModel>(named("remote")) { fakeLlm }
+                },
+            )
+        }
+    }
+
     @Test
     fun `test addEntry generates vector and saves to repository`() = runTest {
         val fakeRepo = FakeNoteRepository()
         val fakeLlm = FakeLargeLanguageModel()
-        val fakeProvider = FakeLlmProvider(fakeLlm)
+        setupKoin(fakeLlm)
+        val fakeProvider = LlmProvider()
         val fakeEmbedder = FakeTextEmbedder()
         fakeEmbedder.vectorToReturn = floatArrayOf(0.1f, 0.2f, 0.3f)
 
@@ -67,7 +94,8 @@ class JourneyNotesServiceTest {
         val fakeRepo = FakeNoteRepository()
         val fakeLlm = FakeLargeLanguageModel()
         fakeLlm.generateResponseResult = "An enhanced test note."
-        val fakeProvider = FakeLlmProvider(fakeLlm)
+        setupKoin(fakeLlm)
+        val fakeProvider = LlmProvider()
         val fakeEmbedder = FakeTextEmbedder()
 
         val service = JourneyNotesService(fakeProvider, fakeEmbedder, fakeRepo)
@@ -91,7 +119,8 @@ class JourneyNotesServiceTest {
 
         val fakeLlm = FakeLargeLanguageModel()
         fakeLlm.generateResponseResult = "Answer from similar note"
-        val fakeProvider = FakeLlmProvider(fakeLlm)
+        setupKoin(fakeLlm)
+        val fakeProvider = LlmProvider()
         val fakeEmbedder = FakeTextEmbedder()
         // Vector pointing in the same direction as note1
         fakeEmbedder.vectorToReturn = floatArrayOf(1.0f, 0.0f, 0.0f)
