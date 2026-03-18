@@ -13,6 +13,7 @@ import com.adriano.journey.data.db.room.NoteRepositoryRoom
 import com.adriano.journey.data.embedder.TextEmbedderMediaPipe
 import com.adriano.journey.data.llm.LargeLanguageModelGeminiNano
 import com.adriano.journey.data.llm.LargeLanguageModelGeminiRemote
+import com.adriano.journey.data.llm.LargeLanguageModelMediaPipe
 import io.objectbox.BoxStore
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext

@@ -85,6 +85,10 @@ class JourneyEntryViewModel(
     private fun saveNote() {
         viewModelScope.launch {
             val textToSave = state.value.noteInput
+            if (textToSave.isBlank()) {
+                _state.update { it.copy(noteInput = "") }
+                return@launch
+            }
             _state.update { it.copy(addNoteLoading = true, noteInput = "") }
             try {
                 journeyEntryService.addEntry(textToSave)
