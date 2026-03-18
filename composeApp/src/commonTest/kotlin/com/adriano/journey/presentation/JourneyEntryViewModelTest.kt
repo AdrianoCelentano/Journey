@@ -68,7 +68,8 @@ class JourneyEntryViewModelTest {
             modules(
                 module {
                     single<AppPreferences> { FakeAppPreferences() }
-                    single<LargeLanguageModel>(named("local")) { fakeLlm }
+                    single<LargeLanguageModel>(named("local_nano")) { fakeLlm }
+                    single<LargeLanguageModel>(named("local_fallback")) { fakeLlm }
                     single<LargeLanguageModel>(named("remote")) { fakeLlm }
                 },
             )

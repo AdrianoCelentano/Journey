@@ -23,13 +23,8 @@ import org.koin.dsl.module
 
 actual val platformModule: Module = module {
     single<AppPreferences> { AndroidAppPreferences(androidContext()) }
-    single<LargeLanguageModel>(named("local")) {
-        if (LargeLanguageModelGeminiNano.isSupported()) {
-            LargeLanguageModelGeminiNano()
-        } else {
-            LargeLanguageModelMediaPipe(androidApplication())
-        }
-    }
+    single<LargeLanguageModel>(named("local_nano")) { LargeLanguageModelGeminiNano() }
+    single<LargeLanguageModel>(named("local_fallback")) { LargeLanguageModelMediaPipe(androidApplication()) }
     single<LargeLanguageModel>(named("remote")) {
         LargeLanguageModelGeminiRemote()
     }

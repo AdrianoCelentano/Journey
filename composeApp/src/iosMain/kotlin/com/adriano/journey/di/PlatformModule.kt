@@ -10,7 +10,13 @@ import org.koin.dsl.module
 
 actual val platformModule: Module = module {
     single<AppPreferences> { IosAppPreferences() }
-    single<LargeLanguageModel>(named("local")) {
+    single<LargeLanguageModel>(named("local_nano")) {
+        object : LargeLanguageModel {
+            override suspend fun generateResponse(prompt: String): String = ""
+            override suspend fun isSupported(): Boolean = false
+        }
+    }
+    single<LargeLanguageModel>(named("local_fallback")) {
         object : LargeLanguageModel {
             override suspend fun generateResponse(prompt: String): String {
                 return "MediaPipe LLM not yet implemented on iOS."

@@ -14,11 +14,13 @@ class LlmProvider : KoinComponent {
             preferences.setBoolean("is_local_model_enabled", value)
         }
 
-    private val localLlm: LargeLanguageModel by inject(named("local"))
+    private val localNanoLlm: LargeLanguageModel by inject(named("local_nano"))
+    private val localFallbackLlm: LargeLanguageModel by inject(named("local_fallback"))
 
     private val remoteLlm: LargeLanguageModel by inject(named("remote"))
 
-    fun provide(): LargeLanguageModel {
-        return if (isLocalModelEnabled) localLlm else remoteLlm
+    suspend fun provide(): LargeLanguageModel {
+        if (!isLocalModelEnabled) return remoteLlm
+        return if (localNanoLlm.isSupported()) localNanoLlm else localFallbackLlm
     }
 }

@@ -11,8 +11,6 @@ class JourneyNotesService(
     private val noteRepository: NoteRepository,
 ) {
 
-    private val llm get() = llmProvider.provide()
-
     suspend fun addEntry(note: String) {
         val vector = textEmbedder.generateVector(note)
         val timestamp = getCurrentTimeMillis()
@@ -20,7 +18,7 @@ class JourneyNotesService(
     }
 
     suspend fun enhanceNote(note: String): String {
-        return llm.generateResponse(enhanceNotePrompt(note))
+        return llmProvider.provide().generateResponse(enhanceNotePrompt(note))
     }
 
     private fun enhanceNotePrompt(note: String): String =
@@ -43,7 +41,7 @@ class JourneyNotesService(
         val notes = noteRepository.loadMatchingNotes(queryVector)
         val notesContents = notes.map { it.content }
         val prompt = searchNotePrompt(notesContents, search)
-        return llm.generateResponse(prompt)
+        return llmProvider.provide().generateResponse(prompt)
     }
 
     private fun searchNotePrompt(notes: List<String>, search: String): String =

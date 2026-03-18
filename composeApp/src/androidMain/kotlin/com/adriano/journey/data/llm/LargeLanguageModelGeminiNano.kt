@@ -5,28 +5,16 @@ import com.google.mlkit.genai.common.DownloadStatus
 import com.google.mlkit.genai.common.FeatureStatus
 import com.google.mlkit.genai.prompt.GenerateContentResponse
 import com.google.mlkit.genai.prompt.Generation
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
 class LargeLanguageModelGeminiNano : LargeLanguageModel {
 
-    companion object {
-        var _isSupported: Boolean = false
-
-        init {
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-                    val status = Generation.getClient().checkStatus()
-                    _isSupported = status != FeatureStatus.UNAVAILABLE
-                } catch (e: Exception) {
-                    _isSupported = false
-                }
-            }
+    override suspend fun isSupported(): Boolean {
+        return try {
+            Generation.getClient().checkStatus() != FeatureStatus.UNAVAILABLE
+        } catch (e: Exception) {
+            false
         }
-
-        fun isSupported(): Boolean = _isSupported
     }
 
     private val generativeModel = Generation.getClient()
