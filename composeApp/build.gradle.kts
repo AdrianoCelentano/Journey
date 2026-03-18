@@ -9,8 +9,12 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.spotless)
     alias(libs.plugins.detekt)
-    alias(libs.plugins.googleServices)
+    alias(libs.plugins.googleServices) apply false
     alias(libs.plugins.kotlin.kapt)
+}
+
+if (file("google-services.json").exists()) {
+    apply(plugin = "com.google.gms.google-services")
 }
 
 val localProperties = Properties()
