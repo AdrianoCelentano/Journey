@@ -21,3 +21,6 @@ node_modules/
 
 .gemini/
 gha-creds-*.json
+/gemma_model/src/main/assets/gemma3-1b-it-int4.task
+/composeApp/google-services.json
+/gemma_model/src/main/assets/universal_sentence_encoder.tflite
