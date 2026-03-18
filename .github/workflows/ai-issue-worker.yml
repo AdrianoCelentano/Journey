@@ -1,0 +1,25 @@
+name: '🤖 AI Issue Worker'
+
+on:
+  issues:
+    types:
+      - 'labeled'
+
+concurrency:
+  group: '${{ github.workflow }}-ai-worker-${{ github.event.issue.number }}'
+  cancel-in-progress: true
+
+jobs:
+  work-on-issue:
+    name: 'Plan and Execute on AI Label'
+    if: |-
+      github.event.label.name == 'AI'
+    uses: './.github/workflows/gemini-plan-execute.yml'
+    permissions:
+      contents: 'write'
+      id-token: 'write'
+      issues: 'write'
+      pull-requests: 'write'
+    secrets: 'inherit'
+    with:
+      additional_context: 'This issue was automatically assigned to the AI agent because it was labeled with "AI". Please comprehensively plan and execute a solution for this issue.'

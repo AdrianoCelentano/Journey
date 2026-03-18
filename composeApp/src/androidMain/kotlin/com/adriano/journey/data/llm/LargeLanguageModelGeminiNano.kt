@@ -3,7 +3,6 @@ package com.adriano.journey.data.llm
 import com.adriano.journey.data.LargeLanguageModel
 import com.google.mlkit.genai.prompt.GenerateContentResponse
 import com.google.mlkit.genai.prompt.Generation
-import com.google.mlkit.genai.prompt.GenerativeModel
 
 class LargeLanguageModelGeminiNano : LargeLanguageModel {
 

@@ -14,7 +14,7 @@ class TextEmbedderRemote : JourneyTextEmbedder {
             client.models.embedContent(
                 "text-embedding-004",
                 prompt,
-                null
+                null,
             ).embedding
         } catch (e: Exception) {
             floatArrayOf()

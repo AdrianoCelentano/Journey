@@ -30,7 +30,6 @@ data class JourneyEntryState(
 
     val enableSearchTextField: Boolean
         get() = !searchLoading
-
 }
 
 data class Question(

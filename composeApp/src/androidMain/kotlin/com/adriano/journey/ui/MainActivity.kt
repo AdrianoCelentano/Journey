@@ -7,7 +7,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import org.koin.core.component.KoinComponent
-import java.time.Instant
 
 class MainActivity : ComponentActivity(), KoinComponent {
 
