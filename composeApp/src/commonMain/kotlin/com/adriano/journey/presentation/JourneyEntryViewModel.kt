@@ -50,12 +50,12 @@ class JourneyEntryViewModel(
 
     private fun enhanceNote() {
         viewModelScope.launch {
-            _state.update { it.copy(addNoteLoading = true) }
+            _state.update { it.copy(enhanceNoteLoading = true) }
             try {
                 val note = journeyEntryService.enhanceNote(state.value.noteInput)
                 _state.update { it.copy(noteInput = note) }
             } finally {
-                _state.update { it.copy(addNoteLoading = false) }
+                _state.update { it.copy(enhanceNoteLoading = false) }
             }
         }
     }
@@ -89,9 +89,20 @@ class JourneyEntryViewModel(
             try {
                 journeyEntryService.addEntry(textToSave)
             } finally {
-                onIntent(JourneyEntryIntent.UpdateNoteText(""))
                 _state.update { it.copy(addNoteLoading = false) }
             }
         }
     }
+
+    public inline fun <T> MutableStateFlow<T>.update(function: (T) -> T) {
+        while (true) {
+            val prevValue = value
+            val nextValue = function(prevValue)
+            println("new state $nextValue")
+            if (compareAndSet(prevValue, nextValue)) {
+                return
+            }
+        }
+    }
+
 }

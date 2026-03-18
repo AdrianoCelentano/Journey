@@ -41,6 +41,7 @@ fun AddScreen(modifier: Modifier = Modifier, viewModel: JourneyEntryViewModel = 
             value = state.noteInput,
             onValueChange = { viewModel.onIntent(JourneyEntryIntent.UpdateNoteText(it)) },
             modifier = Modifier.fillMaxWidth().weight(1f),
+            enabled = state.enableNoteInput,
             placeholder = { Text("What's on your mind?") },
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -48,9 +49,9 @@ fun AddScreen(modifier: Modifier = Modifier, viewModel: JourneyEntryViewModel = 
             Button(
                 onClick = { viewModel.onIntent(JourneyEntryIntent.EnhanceNote) },
                 modifier = Modifier.weight(0.5f).height(48.dp),
-                enabled = !state.addNoteLoading && !state.noteInput.isBlank(),
+                enabled = state.enableEnhanceButton,
             ) {
-                if (state.addNoteLoading) {
+                if (state.enhanceNoteLoading) {
                     CircularProgressIndicator(modifier = Modifier.height(20.dp))
                 } else {
                     Icon(imageVector = Icons.Default.Abc, contentDescription = null)
@@ -62,7 +63,7 @@ fun AddScreen(modifier: Modifier = Modifier, viewModel: JourneyEntryViewModel = 
             Button(
                 onClick = { viewModel.onIntent(JourneyEntryIntent.SaveNote) },
                 modifier = Modifier.weight(0.5f).height(48.dp),
-                enabled = !state.addNoteLoading && !state.noteInput.isBlank(),
+                enabled = state.enableSaveButton,
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = null)
                 Spacer(Modifier.width(5.dp))

@@ -1,4 +1,4 @@
-package com.adriano.journey.data.llm
+package com.adriano.journey.data.embedder
 
 import android.app.Application
 import android.util.Log

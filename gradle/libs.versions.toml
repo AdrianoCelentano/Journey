@@ -11,6 +11,7 @@ androidx-lifecycle = "2.9.6"
 androidx-testExt = "1.3.0"
 composeMultiplatform = "1.10.0"
 genaiPrompt = "1.0.0-beta1"
+generativeai = "0.9.0"
 junit = "4.13.2"
 kotlin = "2.3.0"
 kotlinxCoroutinesTest = "1.8.0"
@@ -30,6 +31,7 @@ firebase-ai = { module = "com.google.firebase:firebase-ai" }
 firebase-vertexai = { module = "com.google.firebase:firebase-vertexai", version = "16.5.0" }
 genai-prompt = { module = "com.google.mlkit:genai-prompt", version.ref = "genaiPrompt" }
 google-firebase-vertexai = { module = "com.google.firebase:firebase-vertexai" }
+google-generativeai = { module = "com.google.ai.client.generativeai:generativeai", version.ref = "generativeai" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { module = "junit:junit", version.ref = "junit" }

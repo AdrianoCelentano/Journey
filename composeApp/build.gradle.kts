@@ -76,6 +76,9 @@ kotlin {
             implementation(libs.kotlinx.coroutines.test)
         }
     }
+    sourceSets.androidMain.dependencies {
+        implementation(kotlin("test"))
+    }
 }
 
 android {

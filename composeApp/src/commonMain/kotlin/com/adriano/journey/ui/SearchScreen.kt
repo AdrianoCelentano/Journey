@@ -151,7 +151,7 @@ fun SearchScreen(
         ) {
             IconButton(
                 onClick = { showDatePicker = true },
-                enabled = !state.searchLoading,
+                enabled = state.enableDateRangeButton,
             ) {
                 Icon(Icons.Default.DateRange, contentDescription = "Date Range")
             }
@@ -161,12 +161,12 @@ fun SearchScreen(
                 onValueChange = { viewModel.onIntent(JourneyEntryIntent.UpdateNoteSearchText(it)) },
                 modifier = Modifier.weight(1f),
                 placeholder = { Text("Ask the AI...") },
-                enabled = !state.searchLoading,
+                enabled = state.enableSearchTextField,
             )
             Spacer(modifier = Modifier.width(8.dp))
             IconButton(
                 onClick = { viewModel.onIntent(JourneyEntryIntent.SearchNotes) },
-                enabled = !state.searchLoading && !state.searchInput.isEmpty(),
+                enabled = state.enableSearchButton,
             ) {
                 Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Send")
             }

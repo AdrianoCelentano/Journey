@@ -12,7 +12,9 @@ import com.adriano.journey.data.db.room.NoteDao
 import com.adriano.journey.data.db.room.NoteRepositoryRoom
 import com.adriano.journey.data.llm.LargeLanguageModelGeminiRemote
 import com.adriano.journey.data.llm.LargeLanguageModelMediaPipe
-import com.adriano.journey.data.llm.TextEmbedderMediaPipe
+import com.adriano.journey.data.embedder.TextEmbedderMediaPipe
+import com.adriano.journey.data.embedder.TextEmbedderRemote
+import com.adriano.journey.data.llm.LargeLanguageModelGeminiNano
 import io.objectbox.BoxStore
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
@@ -23,12 +25,15 @@ import org.koin.dsl.module
 actual val platformModule: Module = module {
     single<AppPreferences> { AndroidAppPreferences(androidContext()) }
     single<LargeLanguageModel>(named("local")) {
-        LargeLanguageModelMediaPipe(androidApplication())
+        LargeLanguageModelGeminiNano()
     }
     single<LargeLanguageModel>(named("remote")) {
         LargeLanguageModelGeminiRemote()
     }
-    single<JourneyTextEmbedder>(createdAtStart = true) { TextEmbedderMediaPipe(androidApplication()) }
+    single<JourneyTextEmbedder>(createdAtStart = true) {
+        TextEmbedderMediaPipe(androidApplication())
+//        TextEmbedderRemote()
+    }
     single<AppDatabase> {
         databaseBuilder(
             androidContext(),

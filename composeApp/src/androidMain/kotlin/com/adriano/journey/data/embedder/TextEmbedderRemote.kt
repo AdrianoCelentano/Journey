@@ -1,12 +1,11 @@
-package com.adriano.journey.data.llm
+package com.adriano.journey.data.embedder
 
 import com.adriano.journey.BuildConfig
 import com.adriano.journey.data.JourneyTextEmbedder
 import com.google.genai.Client
 import com.google.genai.types.EmbedContentResponse
-import com.google.mlkit.genai.prompt.GenerateContentResponse
 
-class TextEmbedderGeminiNano : JourneyTextEmbedder {
+class TextEmbedderRemote : JourneyTextEmbedder {
 
     private val client = Client.builder().apiKey(BuildConfig.GEMINI_API_KEY).build()
 
